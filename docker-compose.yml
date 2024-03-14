@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend/goldinvesting
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - goldinvesting-net
+
+  frontend:
+    build:
+      context: ./frontend/goldinvesting
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    networks:
+      - goldinvesting-net
+
+networks:
+  goldinvesting-net:
+    driver: bridge
+
