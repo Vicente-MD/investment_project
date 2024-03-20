@@ -1,5 +1,5 @@
-# Use the official OpenJDK image for the JDK base
-FROM openjdk:21-jdk-slim as build
+# Define the base image
+FROM openjdk:21-jdk as build
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -15,3 +15,18 @@ RUN chmod +x mvnw
 
 # Package the application
 RUN ./mvnw clean package
+
+# Start a new build stage to create a smaller runtime image
+FROM openjdk:21-jdk
+
+# Set the working directory in the new image
+WORKDIR /app
+
+# Copy the built JAR file from the previous build stage
+COPY --from=build /app/target/*.jar /app/application.jar
+
+# Expose the port your application uses
+EXPOSE 8080
+
+# Command to run your application
+CMD ["java", "-jar", "application.jar"]

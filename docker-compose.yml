@@ -9,6 +9,13 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+      # Database environment variables
+      - SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/aurum?useTimezone=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      # Specify the dependency on the mysql service
+    depends_on:
+      - mysql
     networks:
       - goldinvesting-net
 
@@ -21,7 +28,22 @@ services:
     networks:
       - goldinvesting-net
 
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: aurum
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - goldinvesting-net
+
 networks:
   goldinvesting-net:
     driver: bridge
 
+volumes:
+  mysql-data:
+    driver: local
