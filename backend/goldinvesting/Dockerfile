@@ -28,5 +28,9 @@ COPY --from=build /app/target/*.jar /app/application.jar
 # Expose the port your application uses
 EXPOSE 8080
 
-# Command to run your application
-CMD ["java", "-jar", "application.jar"]
+# Copy wait-for-it script and make it executable
+COPY wait-for-it.sh /app/wait-for-it.sh
+RUN chmod +x /app/wait-for-it.sh
+
+# your build commands here
+CMD ["./wait-for-it.sh", "mysql:3306", "--", "java", "-jar", "application.jar"]

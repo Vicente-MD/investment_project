@@ -10,10 +10,9 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       # Database environment variables
-      - SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/aurum?useTimezone=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/aurum?useTimezone=true&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-      # Specify the dependency on the mysql service
     depends_on:
       - mysql
     networks:
