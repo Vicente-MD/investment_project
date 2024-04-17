@@ -1,0 +1,82 @@
+.header-cadastro {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 15%;
+    top: 0px;
+    background: linear-gradient(89.98deg, rgba(0, 0, 0, 0.65) 0.59%, rgba(0, 0, 0, 0.87) 25.96%, #000000 49.96%, rgba(0, 0, 0, 0.87) 74.62%, rgba(0, 0, 0, 0.65) 99.98%);
+}
+
+.logo-cadastro {
+    margin-top: 0.8vh;
+    height: 100%;
+}
+
+.main-cadastro {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.container-cadastro {
+    margin-top: 8%;
+    width: 40vw;
+    height: 72vh;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    background: #b2b2b2a2;
+    border: none;
+    border-radius: 15px;
+    box-sizing: border-box;
+    flex-direction: column;
+}
+
+.texto-e-input-cadastro {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.texto-e-input-cadastro>label {
+    font-size: 13pt;
+    font-weight: 600;
+    margin-bottom: 2px;
+    margin-left: 4px;
+}
+
+.texto-e-input-cadastro>input {
+    width: 100%;
+    border: solid;
+    border-width: 1px;
+    border-color: #3a3a3a9f;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 12pt;
+    outline: none;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.h1-cadastro {
+    margin: 5% 0px;
+}
+
+.botao-cadastrar {
+    width: 50%;
+    padding: 16px 0px;
+    margin: 1vw;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    font-size: 12pt;
+    background: #fce91b;
+    font-weight: 800;
+    cursor: pointer;
+}

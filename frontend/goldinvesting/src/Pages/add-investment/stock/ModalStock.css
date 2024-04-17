@@ -1,0 +1,20 @@
+#price,
+#initialDate,
+#quantity {
+  border-radius: 0;
+}
+
+.modalStockBody {
+  font-size: 15pt;
+}
+
+.select-inputs {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.select-inputs-inside {
+  display: flex;
+  flex-direction: column;
+}

@@ -10,8 +10,8 @@ COPY src /app/src
 COPY mvnw /app
 COPY .mvn /app/.mvn
 
-# Make sure mvnw is executable
-RUN chmod +x mvnw
+# Make sure mvnw is executable and fix line endings
+RUN chmod +x mvnw && sed -i 's/\r$//' mvnw
 
 # Package the application
 RUN ./mvnw clean package
@@ -30,7 +30,7 @@ EXPOSE 8080
 
 # Copy wait-for-it script and make it executable
 COPY wait-for-it.sh /app/wait-for-it.sh
-RUN chmod +x /app/wait-for-it.sh
+RUN chmod +x /app/wait-for-it.sh && sed -i 's/\r$//' wait-for-it.sh
 
-# your build commands here
+# Command to run your application
 CMD ["./wait-for-it.sh", "mysql:3306", "--", "java", "-jar", "application.jar"]
