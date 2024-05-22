@@ -42,7 +42,7 @@ O backend do projeto GoldInvesting segue a arquitetura hexagonal (Ports and Adap
 
 A seguir está o diagrama de classes da aplicação GoldInvesting:
 
-![Diagrama de Classes](file:///mnt/data/image.png)
+![Diagrama de Classes](./class-diagram.png)
 
 Este diagrama ilustra a estrutura do sistema, incluindo as principais entidades, seus atributos e métodos, bem como as relações entre elas.
 
