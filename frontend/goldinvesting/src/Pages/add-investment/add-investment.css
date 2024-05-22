@@ -1,0 +1,86 @@
+.main-add-investment {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+
+.h1-add-invest {
+  width: auto;
+  padding-left: 16vw;
+  margin-bottom: 40px;
+  font-size: 41px;
+  font-weight: 500;
+}
+
+.container-ai {
+  margin: 0px 0px 0px 320px;
+  width: 45vw;
+  height: 75vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border: none;
+  border-radius: 15px;
+  outline: none;
+  flex-direction: row;
+  padding-top: 50px;
+}
+
+.card {
+  width: 14vw;
+  min-height: 560px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background: #b2b2b2a2;
+  border: none;
+  border-radius: 15px;
+  outline: none;
+  flex-direction: row;
+}
+
+.card-img-top {
+  width: 250px;
+  height: 160px;
+}
+
+.card-title {
+  margin: 10px 0px;
+  font-size: 23px;
+  font-weight: 500;
+}
+
+.card-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.card-text {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 17px;
+}
+
+.investment-options>button {
+  color: #ffffff;
+  width: 50%;
+  padding: 16px 0px;
+  margin: 20px 10px 0px 10px;
+  border: none;
+  /* border-radius: 10px; */
+  outline: none;
+  font-size: 13pt;
+  background: #000000;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.investment-options>button:hover {
+  background-color: #ffc600;
+  color: #000000;
+}
