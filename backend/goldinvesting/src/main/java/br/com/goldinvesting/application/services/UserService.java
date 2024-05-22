@@ -27,7 +27,7 @@ public class UserService implements UserUseCase {
     @Override
     public UserDTO createUser(UserDTO userDTO) {
         User user = UserConverter.toEntity(userDTO);
-        Wallet wallet = new Wallet(0, user);
+        Wallet wallet = new Wallet(user.getWallet().getId(), user, user.getWallet().getBalance());
         user.setWallet(walletRepository.save(wallet));
         User savedUser = userRepository.save(user);
         return UserConverter.toDTO(savedUser);
