@@ -124,4 +124,121 @@ public class UserControllerTest {
 
 Estes testes são executados durante o ciclo de desenvolvimento para garantir que o código continue funcionando conforme novas funcionalidades são adicionadas ou alterações são feitas.
 
+## Criação das tabelas
+
+Utilizando JPA e SpringBoot, as tabelas são criadas "automaticamente" ao iniciar o serviço. No entanto, com fim de disponibilizar a plena utilização, esse é um exemplo de arquivo SQL criado para criação de tabelas para o funcionamento do app GoldInvesting:
+```sql
+CREATE TABLE Broker (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE StockDB (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE InvestmentType (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    investmentType VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Status (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    status VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE User (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Wallet (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    balance DOUBLE,
+    CONSTRAINT FK_UserWallet FOREIGN KEY (user_id) REFERENCES User(id)
+);
+
+ALTER TABLE User
+ADD CONSTRAINT FK_UserWallet FOREIGN KEY (wallet_id) REFERENCES Wallet(id);
+
+CREATE TABLE Investment (
+    id BIGINT PRIMARY KEY,
+    title VARCHAR(255),
+    yieldRate DOUBLE,
+    initialDate DATE,
+    initialValue DOUBLE,
+    broker_id BIGINT,
+    paper VARCHAR(255),
+    issuer VARCHAR(255),
+    finalDate DATE,
+    stock_id VARCHAR(255),
+    quantity DOUBLE,
+    price DOUBLE,
+    CONSTRAINT FK_InvestmentBroker FOREIGN KEY (broker_id) REFERENCES Broker(id),
+    CONSTRAINT FK_InvestmentStock FOREIGN KEY (stock_id) REFERENCES StockDB(id)
+);
+
+CREATE TABLE CheckingAccount (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    yieldRate DOUBLE CHECK (yieldRate > 0.0),
+    initialDate DATE NOT NULL CHECK (initialDate <= CURDATE()),
+    initialValue DOUBLE CHECK (initialValue > 0.0),
+    broker_id BIGINT NOT NULL,
+    CONSTRAINT FK_CheckingAccountBroker FOREIGN KEY (broker_id) REFERENCES Broker(id)
+);
+
+CREATE TABLE Stock (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    stock_id VARCHAR(255) NOT NULL,
+    broker_id BIGINT NOT NULL,
+    quantity DOUBLE CHECK (quantity > 0.0),
+    initialValue DOUBLE CHECK (initialValue > 0.0),
+    initialDate DATE NOT NULL CHECK (initialDate <= CURDATE()),
+    price DOUBLE CHECK (price > 0.0),
+    CONSTRAINT FK_StockStockDB FOREIGN KEY (stock_id) REFERENCES StockDB(id),
+    CONSTRAINT FK_StockBroker FOREIGN KEY (broker_id) REFERENCES Broker(id)
+);
+
+CREATE TABLE Transaction (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    investment_id BIGINT,
+    investmentType_id BIGINT NOT NULL,
+    wallet_id BIGINT NOT NULL,
+    status_id BIGINT NOT NULL,
+    CONSTRAINT FK_TransactionInvestment FOREIGN KEY (investment_id) REFERENCES Investment(id),
+    CONSTRAINT FK_TransactionInvestmentType FOREIGN KEY (investmentType_id) REFERENCES InvestmentType(id),
+    CONSTRAINT FK_TransactionWallet FOREIGN KEY (wallet_id) REFERENCES Wallet(id),
+    CONSTRAINT FK_TransactionStatus FOREIGN KEY (status_id) REFERENCES Status(id)
+);
+
+CREATE TABLE TreasuryDirect (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    issuer VARCHAR(100) NOT NULL,
+    yieldRate DOUBLE CHECK (yieldRate > 0.0),
+    initialDate DATE NOT NULL CHECK (initialDate <= CURDATE()),
+    finalDate DATE NOT NULL,
+    initialValue DOUBLE CHECK (initialValue > 0.0),
+    broker_id BIGINT NOT NULL,
+    CONSTRAINT FK_TreasuryDirectBroker FOREIGN KEY (broker_id) REFERENCES Broker(id)
+);
+
+CREATE TABLE FixedIncomeModel (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    paper VARCHAR(100) NOT NULL,
+    issuer VARCHAR(100) NOT NULL,
+    yieldRate DOUBLE CHECK (yieldRate > 0.0),
+    initialDate DATE NOT NULL CHECK (initialDate <= CURDATE()),
+    finalDate DATE NOT NULL,
+    initialValue DOUBLE CHECK (initialValue > 0.0),
+    broker_id BIGINT NOT NULL,
+    CONSTRAINT FK_FixedIncomeModelBroker FOREIGN KEY (broker_id) REFERENCES Broker(id)
+);
+
+```
 ---
