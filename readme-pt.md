@@ -1,5 +1,3 @@
----
-
 # Implementação do GoldInvesting
 
 Bem-vindo ao guia da aplicação GoldInvesting. Esta aplicação é dividida em duas partes principais: um backend em Java Spring Boot e um frontend em React.js. Utilizamos Docker e Docker Compose para containerizar a aplicação, simplificando seu desenvolvimento e implantação.
