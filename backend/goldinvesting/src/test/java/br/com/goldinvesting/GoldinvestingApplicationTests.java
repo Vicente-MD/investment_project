@@ -1,13 +1,13 @@
-// package br.com.goldinvesting;
+package br.com.goldinvesting;
 
-// import org.junit.jupiter.api.Test;
-// import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
-// @SpringBootTest
-// class GoldinvestingApplicationTests {
+@SpringBootTest
+class GoldinvestingApplicationTests {
 
-// 	@Test
-// 	void contextLoads() {
-// 	}
+	@Test
+	void contextLoads() {
+	}
 
-// }
+}
