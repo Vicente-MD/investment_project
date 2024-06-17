@@ -72,7 +72,7 @@ const AddInvestment: React.FC = () => {
                   },
                 }}
               >
-                Add Investment
+                Adicionar investimento
               </Button>
               <CustomModal open={open} onClose={handleClose} />
             </Stack>

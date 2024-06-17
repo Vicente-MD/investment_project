@@ -72,10 +72,10 @@ const Navbar: React.FC = () => {
       <List>
         {[
           { text: 'Home', icon: <HomeIcon />, link: '/home' },
-          { text: 'News', icon: <NewspaperIcon />, link: '/news' },
-          { text: 'User Investments', icon: <AccountBalanceWalletIcon />, link: '/addinvestments' },
-          { text: 'Investments', icon: <AccountBalanceWalletIcon />, link: '/investments' },
-          { text: 'Simulate', icon: <CalculateIcon />, link: '/simulate' },
+          { text: 'Notícias', icon: <NewspaperIcon />, link: '/news' },
+          { text: 'Meus Investimentos', icon: <AccountBalanceWalletIcon />, link: '/addinvestments' },
+          { text: 'Mercado de Ações', icon: <AccountBalanceWalletIcon />, link: '/investments' },
+          { text: 'Simular', icon: <CalculateIcon />, link: '/simulate' },
         ].map((item) => (
           <ListItemButton sx={StyledListItemButton} key={item.text} component={Link} to={item.link}>
             <ListItemIcon sx={{ color: '#fff' }}>{item.icon}</ListItemIcon>
@@ -86,7 +86,7 @@ const Navbar: React.FC = () => {
       <Divider sx={{ backgroundColor: '#fff' }}/>
       <List>
         {[
-          { text: 'Account', icon: <AccountCircleIcon />, link: '/account' },
+          { text: 'Minha Conta', icon: <AccountCircleIcon />, link: '/account' },
         ].map((item) => (
           <ListItemButton sx={StyledListItemButton} key={item.text} component={Link} to={item.link}>
             <ListItemIcon sx={{ color: '#fff' }}>{item.icon}</ListItemIcon>

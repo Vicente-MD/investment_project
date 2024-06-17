@@ -7,7 +7,7 @@ import { TextField, Container, Typography, Box, Grid, Paper, styled, Link, AppBa
 import imagem1 from "../../shared/images/Carteira.png";
 import { yellow } from '@mui/material/colors';
 import CustomColorButton from '../../Components/CustomColorButton';
-import "./Login.css";
+import "./login.css";
 
 const Login: React.FC = () => {
   const dispatch = useDispatch();

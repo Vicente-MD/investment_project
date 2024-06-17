@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { Modal, Select, MenuItem, Grid, Typography, SelectChangeEvent, Box, InputLabel, Input, InputAdornment, Button, createTheme } from '@mui/material';
-import BasicDatePicker from './DateTimePickerViewRenderers';
-import AutoComplete from './AutoComplete';
+import { Box, Button, Grid, Input, InputAdornment, InputLabel, MenuItem, Modal, Select, SelectChangeEvent, Typography, createTheme } from '@mui/material';
 import { purple, yellow } from '@mui/material/colors';
+import React, { useState } from 'react';
+import { fetchBrokers, fetchStocksSymbols } from '../services/api';
+import AsyncAutoComplete from './AsyncAutoComplete';
+import AutoComplete from './AutoComplete';
+import BasicDatePicker from './DateTimePickerViewRenderers';
 
 interface CustomModalProps {
   open: boolean;
@@ -55,7 +57,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
         <Grid container spacing={2} justifyContent="center" alignItems="center">
           <Grid item xs={12}>
             <Select value={selectedLayout} onChange={handleSelectChange}>
-              <MenuItem value="Renda Fixa">Renda Fixa</MenuItem>
+              <MenuItem value="Renda Fixa">Renda Fixa (pré fixada)</MenuItem>
               <MenuItem value="Ações">Ações</MenuItem>
               <MenuItem value="Tesouro Direto">Tesouro Direto</MenuItem>
               <MenuItem value="Conta Corrente">Conta Corrente</MenuItem>
@@ -66,31 +68,28 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
               <>
                 <Grid container>
                   <Grid item xs={12}>
-                    <Typography>This is the Renda Fixa</Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <AutoComplete />
+                    <AsyncAutoComplete valueKey='id' labelKey='name' labelText='Corretora' fetchOptions={fetchBrokers} />
                   </Grid>
                   <Grid item xs={6} sx={{ marginY: 2 }}>
-                    <InputLabel htmlFor="standard-adornment-amount">Total Investment</InputLabel>
-                    <BasicDatePicker label='select Initial Date' />
+                    <BasicDatePicker label='Data Inicial' />
                   </Grid>
                   <Grid item xs={6} sx={{ marginY: 2 }}>
-                    <InputLabel htmlFor="standard-adornment-amount">Total Investment</InputLabel>
-                    <BasicDatePicker label='select Final Date' />
+                    <BasicDatePicker label='Data final' />
                   </Grid>
                   <Grid item xs={6} sx={{ marginY: 2 }}>
-                    <InputLabel htmlFor="standard-adornment-amount">Amount</InputLabel>
+                    <InputLabel htmlFor="standard-adornment-amount">Quantidade</InputLabel>
                     <Input
                       id="standard-adornment-amount"
-                      startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                      startAdornment={<InputAdornment position="start">R$</InputAdornment>}
                     />
                   </Grid>
                   <Grid item xs={6} sx={{ marginY: 2 }}>
-                    <InputLabel htmlFor="standard-adornment-amount">Total Investment</InputLabel>
+                    <InputLabel htmlFor="standard-adornment-amount">Valorização final</InputLabel>
                     <Input
                       id="standard-adornment-amount"
-                      startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                      endAdornment={<InputAdornment position="start">%</InputAdornment>}
                     />
                   </Grid>
                   <Grid item xs={12} display="flex" justifyContent="flex-end" sx={{ marginY: 2 }}>
@@ -101,7 +100,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
                         backgroundColor: yellow[700],
                       }
                     }}>
-                      Submit
+                      Adicionar
                     </Button>
                   </Grid>
                 </Grid>
@@ -110,18 +109,15 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
             {selectedLayout === 'Ações' && (
               <Grid container>
                 <Grid item xs={12}>
-                  <Typography>This is the Ações</Typography>
                 </Grid>
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
-                  <Typography>broker</Typography>
-                  <AutoComplete />
+                  <AsyncAutoComplete valueKey='id' labelKey='name' labelText='Corretora' fetchOptions={fetchBrokers} />
                 </Grid>
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
-                  <InputLabel htmlFor="standard-adornment-amount">Stock</InputLabel>
-                  <AutoComplete />
+                  <AsyncAutoComplete valueKey='id' labelKey='ticker' labelText='Ativo' fetchOptions={fetchStocksSymbols} />
                 </Grid>
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
-                  <InputLabel htmlFor="standard-adornment-amount">Price</InputLabel>
+                  <InputLabel htmlFor="standard-adornment-amount">Preço</InputLabel>
                   <Input
                     id="standard-adornment-amount"
                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
@@ -134,8 +130,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
                   />
                 </Grid>
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
-                  <InputLabel htmlFor="standard-adornment-amount">Initial Date</InputLabel>
-                  <BasicDatePicker label='select Final Date' />
+                  <BasicDatePicker label='Data da compra' />
                 </Grid>
                 <Grid item xs={12} sx={{ marginTop: 2 }}>
                   <InputLabel htmlFor="standard-adornment-amount">Quantidade</InputLabel>
@@ -158,7 +153,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
                       backgroundColor: yellow[700],
                     }
                   }}>
-                    Submit
+                    Adicionar
                   </Button>
                 </Grid>
               </Grid>
@@ -167,7 +162,6 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
               <>
                 <Grid container>
                   <Grid item xs={12}>
-                    <Typography>This is the Tesouro Direto</Typography>
                   </Grid>
                   <Grid item xs={6} sx={{ marginTop: 2 }}>
                     <Typography>broker</Typography>
@@ -207,7 +201,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
                         backgroundColor: yellow[700],
                       }
                     }}>
-                      Submit
+                      Adicionar
                     </Button>
                   </Grid>
                 </Grid>
@@ -216,33 +210,28 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
             {selectedLayout === 'Conta Corrente' && (
               <Grid container>
                 <Grid item xs={12}>
-                  <Typography>This is the Conta Corrente</Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography>broker</Typography>
-
-                  <AutoComplete />
+                  <AsyncAutoComplete valueKey='id' labelKey='name' labelText='Corretora' fetchOptions={fetchBrokers} />
                 </Grid>
                 <Grid item xs={6} sx={{ marginY: 2 }}>
-                  <InputLabel htmlFor="standard-adornment-amount">Initial Date</InputLabel>
-                  <BasicDatePicker label='select Initial Date' />
+                  <BasicDatePicker label='Data inicial' />
                 </Grid>
                 <Grid item xs={6} sx={{ marginY: 2 }}>
-                  <InputLabel htmlFor="standard-adornment-amount">Final Date</InputLabel>
-                  <BasicDatePicker label='select Final Date' />
+                  <BasicDatePicker label='Data final' />
                 </Grid>
                 <Grid item xs={6} sx={{ marginY: 2 }}>
-                  <InputLabel htmlFor="standard-adornment-amount">Initial Value</InputLabel>
+                  <InputLabel htmlFor="standard-adornment-amount">Valor Inicial</InputLabel>
                   <Input
                     id="standard-adornment-amount"
                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                   />
                 </Grid>
                 <Grid item xs={6} sx={{ marginY: 2 }}>
-                  <InputLabel htmlFor="standard-adornment-amount">Yield Rate / year</InputLabel>
+                  <InputLabel htmlFor="standard-adornment-amount">Taxa de valorização mensal</InputLabel>
                   <Input
                     id="standard-adornment-amount"
-                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                    endAdornment={<InputAdornment position="start">%</InputAdornment>}
                   />
                 </Grid>
                 <Grid item xs={12} display="flex" justifyContent="flex-end" sx={{ marginY: 2 }}>
@@ -253,7 +242,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
                       backgroundColor: yellow[700],
                     }
                   }}>
-                    Submit
+                    Adicionar
                   </Button>
                 </Grid>
               </Grid>

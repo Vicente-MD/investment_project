@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchInvestments, fetchAccordionItems } from '../../Services/api';
+import { fetchInvestments, fetchAccordionItems } from '../../services/api';
 
 interface Investment {
   id: number;

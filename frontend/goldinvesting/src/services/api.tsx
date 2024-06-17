@@ -1,7 +1,6 @@
-// src/services/api.ts
 import axios from 'axios';
 
-const API_BASE_URL = 'https://your-backend-api-url.com'; // replace with your backend URL
+const API_BASE_URL = 'http://localhost:8080/api'; 
 
 export const fetchInvestments = async () => {
   //const response = await axios.get(`${API_BASE_URL}/investments`);
@@ -54,4 +53,14 @@ export const fetchAccordionItems = async () => {
 
   return mockAccordionItems;
 
+};
+
+export const fetchBrokers = async (input: string) => {
+  const response = await axios.get(`${API_BASE_URL}/brokers/get-by-text?input=${input}`);
+  return response.data;
+};
+
+export const fetchStocksSymbols = async (input: string) => {
+  const response = await axios.get(`${API_BASE_URL}/stocks-symbols/get-by-text?input=${input}`);
+  return response.data;
 };
