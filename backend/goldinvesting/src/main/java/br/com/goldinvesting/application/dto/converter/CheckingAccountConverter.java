@@ -24,13 +24,14 @@ public class CheckingAccountConverter {
         if (checkingAccountDTO == null) {
             return null;
         }
-        return new CheckingAccount(
-                checkingAccountDTO.getId(),
-                checkingAccountDTO.getTitle(),
-                checkingAccountDTO.getYieldRate(),
-                checkingAccountDTO.getInitialDate(),
-                checkingAccountDTO.getInitialValue(),
-                checkingAccountDTO.getBroker()
-        );
+        var checkingAccount = new CheckingAccount();
+        checkingAccount.setId(checkingAccountDTO.getId());
+        checkingAccount.setTitle(checkingAccountDTO.getTitle());
+        checkingAccount.setYieldRate(checkingAccountDTO.getYieldRate());
+        checkingAccount.setInitialDate(checkingAccountDTO.getInitialDate());
+        checkingAccount.setInitialValue(checkingAccountDTO.getInitialValue());
+        checkingAccount.setBroker(checkingAccountDTO.getBroker());
+
+        return checkingAccount;
     }
 }

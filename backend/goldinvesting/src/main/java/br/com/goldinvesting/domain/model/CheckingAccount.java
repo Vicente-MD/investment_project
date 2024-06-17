@@ -19,11 +19,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class CheckingAccount {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class CheckingAccount extends Investment  {
     @NotNull
     @Size(min = 1, max = 100)
     private String title;

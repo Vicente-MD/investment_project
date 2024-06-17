@@ -1,9 +1,6 @@
 package br.com.goldinvesting.domain.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -14,18 +11,16 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+// ação
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Stock {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Stock extends Investment  {
     @ManyToOne
     @NotNull
-    private StockDB stock;
+    private StockSymbol stockSymbol;
 
     @ManyToOne
     @NotNull
@@ -35,12 +30,12 @@ public class Stock {
     private double quantity;
 
     @DecimalMin(value = "0.0", inclusive = false)
-    private double initialValue;
+    private double initialInvestmentValue;
 
     @NotNull
     @PastOrPresent
-    private LocalDate initialDate;
+    private LocalDate purchaseDate;
 
     @DecimalMin(value = "0.0", inclusive = false)
-    private double price;
+    private double purchasePrice;
 }

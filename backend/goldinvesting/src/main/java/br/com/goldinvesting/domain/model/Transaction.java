@@ -1,12 +1,6 @@
 package br.com.goldinvesting.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,19 +15,15 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonInclude()
-    @Transient
-    private Investment investment;
-
     @ManyToOne
     @NotNull
-    private InvestmentType investmentType;
+    private User user;
 
-    @ManyToOne
-    @NotNull
-    private Wallet wallet;
-
-    @ManyToOne
+    @Enumerated(EnumType.STRING)
     @NotNull
     private Status status;
+
+    @ManyToOne
+    @NotNull
+    private Investment investment;
 }

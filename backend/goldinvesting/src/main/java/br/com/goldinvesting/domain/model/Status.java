@@ -1,25 +1,10 @@
 package br.com.goldinvesting.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-public class Status {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotNull
-    @Size(min = 1, max = 50)
-    private String status;
+public enum Status {
+    ACTIVE,         // Ativo atualmente negociado
+    INACTIVE,       // Ativo não mais negociado
+    PENDING,        // Ativo aguardando alguma condição para ser ativo
+    SOLD,           // Ativo que foi vendido
+    PURCHASED,      // Ativo que foi comprado mas não está mais na carteira
+    UNDER_REVIEW    // Ativo que está sendo analisado
 }

@@ -15,15 +15,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+// renda fixa
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class FixedIncomeModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class FixedIncome extends Investment {
     @NotNull
     @Size(min = 1, max = 100)
     private String paper;
