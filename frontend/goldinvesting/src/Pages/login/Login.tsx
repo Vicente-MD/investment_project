@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
-import { login } from '../../features/auth/AuthSlice';
-import { TextField, Container, Typography, Box, Grid, Paper, styled, Link, AppBar, Toolbar, createTheme } from '@mui/material';
+import { AppDispatch, RootState } from '../../store/store';
+import { authenticateUser } from '../../features/actions/userActions';
+import { TextField, Container, Typography, Box, Grid, Paper, styled, Link, AppBar, Toolbar } from '@mui/material';
 import imagem1 from "../../shared/images/Carteira.png";
-import { yellow } from '@mui/material/colors';
 import CustomColorButton from '../../Components/CustomColorButton';
 import "./login.css";
 
 const Login: React.FC = () => {
-  const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const dispatch: AppDispatch = useDispatch();
+  const isAuthenticated = useSelector((state: RootState) => state.user.user !== null);
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -24,17 +23,13 @@ const Login: React.FC = () => {
   }, [isAuthenticated, navigate]);
 
   const handleLogin = () => {
-    // Fake credentials
-    const fakeUsername = 'user';
-    const fakePassword = 'password';
-
-    if (username === fakeUsername && password === fakePassword) {
-      dispatch(login(username));
-    } else if (!username || !password) {
+    if (!username || !password) {
       setError("Preencha todos os campos");
-    } else {
-      setError('Invalid username or password');
+      return;
     }
+
+    const credenciais = { email: username, password };
+    dispatch(authenticateUser(credenciais));
   };
 
   const Item = styled(Paper)(({ theme }) => ({
@@ -43,7 +38,6 @@ const Login: React.FC = () => {
       marginRight: '10px',
     },
   }));
-
 
   return (
     <Container>

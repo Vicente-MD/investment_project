@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 
 const ProtectedRoute: React.FC = () => {
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
 
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;

@@ -3,40 +3,53 @@ import Avatar from '@mui/material/Avatar';
 import Button, { ButtonProps } from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
-import {  yellow } from '@mui/material/colors';
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
+import { yellow } from '@mui/material/colors';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import CustomColorButton from '../../Components/CustomColorButton';
+import ErrosValidacaoException from '../../app/service/errosValidacao';
+import UsuarioService from '../../app/service/usuarioService';
+
+interface Usuario {
+  name: string;
+  email: string;
+  password: string;
 }
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+  const [usuario, setUsuario] = React.useState<Usuario>({
+    name: '',
+    email: '',
+    password: '',
+  });
+  const usuarioService = new UsuarioService();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+
+    try {
+      usuarioService.validar(usuario); // Validate user data before sending
+
+      const response = await usuarioService.cadastrarUsuario(usuario);
+      console.log('User registered successfully:', response);
+      // Handle successful registration (e.g., redirect to login page)
+    } catch (error) {
+      if (error instanceof ErrosValidacaoException) {
+        console.error('Validation errors:', error);
+        // Display validation errors to the user
+      } else {
+        console.error('Error registering user:', error);
+        // Handle other errors
+      }
+    }
+  }
 
   const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
     color: theme.palette.getContrastText(yellow[500]),
@@ -45,7 +58,6 @@ export default function SignUp() {
       backgroundColor: yellow[700],
     },
   }));
-
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -60,14 +72,14 @@ export default function SignUp() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: yellow[500] }}>
-            <LockOutlinedIcon />
+            <AccountCircleIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Account
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
                   name="firstName"
@@ -76,16 +88,7 @@ export default function SignUp() {
                   id="firstName"
                   label="First Name"
                   autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
+                  onChange={(e) => setUsuario({ ...usuario, name: e.target.value })}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -96,50 +99,42 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  onChange={(e) => setUsuario({ ...usuario, email: e.target.value })}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  required
-                  fullWidth
                   name="password"
                   label="Password"
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  required
+                  fullWidth
+                  onChange={(e) => setUsuario({ ...usuario, password: e.target.value })}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirmPassword"
+                  autoComplete="new-password"
                   required
                   fullWidth
-                  name="Confirm password"
-                  label="Confirm Password"
-                  type="Confirm password"
-                  id="Confirm password"
-                  autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
+                  onChange={(e) => setUsuario({ ...usuario, password: e.target.value })}
                 />
               </Grid>
             </Grid>
-            <ColorButton fullWidth variant="contained" color="primary" type="submit" sx={{marginY:2}}>
+            <CustomColorButton
+              sx={{ mt: 3, mb: 2 }}
+              type="submit"
+            >
               Sign Up
-            </ColorButton>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="/" variant="body2">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
-            </Grid>
+            </CustomColorButton>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );
