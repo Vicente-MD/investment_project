@@ -8,4 +8,5 @@ public interface BrokerUseCase {
     BrokerDTO getBrokerById(long id);
     void deleteBroker(long id);
     List<BrokerDTO> getBrokers();
+    List<BrokerDTO> getBrokerByText(String inputText);
 }

@@ -46,4 +46,12 @@ public class BrokerService implements BrokerUseCase {
                 .map(BrokerConverter::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<BrokerDTO> getBrokerByText(String inputText) {
+        List<Broker> brokers = brokerRepository.findByNameContainingIgnoreCase(inputText);
+        return brokers.stream()
+                .map(BrokerConverter::toDTO)
+                .collect(Collectors.toList());
+    }
 }

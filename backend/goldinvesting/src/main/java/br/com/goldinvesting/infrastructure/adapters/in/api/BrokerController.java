@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/brokers")
+@RequestMapping("/api/brokers")
 @RequiredArgsConstructor
 public class BrokerController {
     private final BrokerUseCase brokerUseCase;
@@ -26,6 +26,11 @@ public class BrokerController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(brokerDTO);
+    }
+
+    @GetMapping("/get-by-text")
+    public ResponseEntity<List<BrokerDTO>> getBrokerByText(@RequestParam("input") String inputText) {
+        return ResponseEntity.ok(brokerUseCase.getBrokerByText(inputText));
     }
 
     @DeleteMapping("/{id}")
