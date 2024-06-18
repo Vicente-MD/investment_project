@@ -13,15 +13,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/checking-accounts")
+@RequestMapping("/api/checking-accounts")
 @RequiredArgsConstructor
 public class CheckingAccountController {
     private final CheckingAccountUseCase checkingAccountUseCase;
 
-    @PostMapping
-    public ResponseEntity<CheckingAccountDTO> createCheckingAccount(@RequestBody CheckingAccountDTO checkingAccountDTO) {
-        CheckingAccount createdCheckingAccount = checkingAccountUseCase.createCheckingAccount(checkingAccountDTO);
-        return ResponseEntity.ok(CheckingAccountConverter.toDTO(createdCheckingAccount));
+    @PostMapping("/{userId}")
+    public ResponseEntity<CheckingAccountDTO> createCheckingAccount(@RequestBody CheckingAccountDTO checkingAccountDTO, @PathVariable long userId) {
+        var createdCheckingAccount = checkingAccountUseCase.createCheckingAccount(checkingAccountDTO, userId);
+        return ResponseEntity.ok(createdCheckingAccount);
     }
 
     @GetMapping("/{id}")

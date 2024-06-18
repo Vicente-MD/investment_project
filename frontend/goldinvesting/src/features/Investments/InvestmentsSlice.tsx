@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchInvestments, fetchAccordionItems } from '../../Services/api';
+import { fetchInvestments, fetchAccordionItems } from '../../services/api';
 
 interface Investment {
   id: number;
@@ -8,8 +8,11 @@ interface Investment {
 }
 
 interface AccordionItem {
-  title: string;
-  rows: { id: number; name: string; value: number }[];
+  year: string | number;
+  month: string | number;
+  price: number;
+  dividend: number;
+  investmentType: string;
 }
 
 interface InvestmentsState {

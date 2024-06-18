@@ -15,15 +15,12 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-interface TableRowData {
-  id: number;
-  name: string;
-  value: number;
-}
-
 interface AccordionItem {
-  title: string;
-  rows: TableRowData[];
+  year: string | number;
+  month: string | number;
+  price: number;
+  dividend: number;
+  investmentType: string;
 }
 
 interface AccordionComponentProps {
@@ -31,20 +28,30 @@ interface AccordionComponentProps {
 }
 
 const AccordionComponent: React.FC<AccordionComponentProps> = ({ items }) => {
+
+  const itemsByType = items.reduce((acc, item) => {
+    if (!acc[item.investmentType]) {
+      acc[item.investmentType] = [];
+    }
+    acc[item.investmentType].push(item);
+    return acc;
+  }, {} as Record<string, AccordionItem[]>);
+
+  console.log(itemsByType)
+
   return (
     <div>
-      {items.map((item, index) => {
+      {Object.entries(itemsByType).map(([type, items], index) => {
         // Transform the rows into the format expected by PieChart
-        const pieData = item.rows.map(row => ({ label: row.name, value: row.value }));
-        
+        const pieData = items.map(item => ({ label: `${item.year}-${item.month}`, value: item.price }));
         return (
-          <Accordion key={index}>
+          <Accordion key={type}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls={`panel${index}-content`}
               id={`panel${index}-header`}
             >
-              <Typography>{item.title}</Typography>
+              <Typography>{type}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <PieChart
@@ -61,19 +68,17 @@ const AccordionComponent: React.FC<AccordionComponentProps> = ({ items }) => {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Name</TableCell>
-                      <TableCell>Value</TableCell>
-                      <TableCell> </TableCell>
-                      
+                      <TableCell>Ano</TableCell>
+                      <TableCell>Mês</TableCell>
+                      <TableCell>Preço</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {item.rows.map((row) => (
-                      <TableRow key={row.id}>
-                        <TableCell>{row.id}</TableCell>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell>{row.value}</TableCell>
+                    {items.map((item, itemIndex) => (
+                      <TableRow key={itemIndex}>
+                        <TableCell>{item.year}</TableCell>
+                        <TableCell>{item.month}</TableCell>
+                        <TableCell>{item.price}</TableCell>
                         <TableCell sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                           <IconButton color="error" aria-label="delete">
                             <DeleteIcon />

@@ -3,24 +3,38 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { authenticateUser } from '../../features/actions/userActions';
-import { TextField, Container, Typography, Box, Grid, Paper, styled, Link, AppBar, Toolbar } from '@mui/material';
+import {
+  TextField, Container, Typography, Box, Grid, Paper, styled, Link, AppBar, Toolbar, CircularProgress
+} from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import imagem1 from "../../shared/images/Carteira.png";
 import CustomColorButton from '../../Components/CustomColorButton';
 import "./login.css";
 
 const Login: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const isAuthenticated = useSelector((state: RootState) => state.user.user !== null);
+  const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
+  const loginError = useSelector((state: RootState) => state.user.error);
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (isAuthenticated) {
+      setLoading(false);
       navigate('/home');
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (loginError) {
+      toast.error(loginError);
+      setLoading(false);
+    }
+  }, [loginError]);
 
   const handleLogin = () => {
     if (!username || !password) {
@@ -28,6 +42,7 @@ const Login: React.FC = () => {
       return;
     }
 
+    setLoading(true);
     const credenciais = { email: username, password };
     dispatch(authenticateUser(credenciais));
   };
@@ -41,6 +56,7 @@ const Login: React.FC = () => {
 
   return (
     <Container>
+      <ToastContainer />
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={16}>
           <Grid item xs={12} md={12}>
@@ -91,8 +107,9 @@ const Login: React.FC = () => {
               <CustomColorButton
                 sx={{ marginY: 2 }}
                 onClick={handleLogin}
+                disabled={loading}
               >
-                Entrar
+                {loading ? <CircularProgress size={24} /> : 'Entrar'}
               </CustomColorButton>
               <Link href="#" variant="body2" style={{ marginBottom: '16px' }}>
                 Esqueceu a senha?

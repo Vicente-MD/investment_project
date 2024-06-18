@@ -1,9 +1,6 @@
 package br.com.goldinvesting.domain.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class CheckingAccount extends Investment  {
+public class CheckingAccount extends Investment {
     @NotNull
     @Size(min = 1, max = 100)
     private String title;

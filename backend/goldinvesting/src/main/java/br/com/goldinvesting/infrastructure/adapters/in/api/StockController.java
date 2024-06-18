@@ -15,9 +15,9 @@ import java.util.List;
 public class StockController {
     private final StockUseCase stockUseCase;
 
-    @PostMapping
-    public ResponseEntity<StockDTO> createStock(@RequestBody StockDTO stockDTO) {
-        return ResponseEntity.ok(stockUseCase.createStock(stockDTO));
+    @PostMapping("/{userId}")
+    public ResponseEntity<StockDTO> createStock(@RequestBody StockDTO stockDTO, @PathVariable Long userId) {
+        return ResponseEntity.ok(stockUseCase.createStock(stockDTO, userId));
     }
 
     @GetMapping
@@ -34,5 +34,11 @@ public class StockController {
     public ResponseEntity<Void> deleteStock(@PathVariable Long id) {
         stockUseCase.deleteStock(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/sell/{transactionId}")
+    public ResponseEntity<Void> sellStock(@PathVariable long transactionId) {
+        stockUseCase.sellStock(transactionId);
+        return ResponseEntity.ok().build();
     }
 }

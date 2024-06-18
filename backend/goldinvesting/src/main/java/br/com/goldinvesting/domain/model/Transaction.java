@@ -26,4 +26,8 @@ public class Transaction {
     @ManyToOne
     @NotNull
     private Investment investment;
+
+    public String toString() {
+        return "Transaction(id=" + this.getId() + ", user=" + this.getUser() + ", status=" + this.getStatus() + ")";
+    }
 }

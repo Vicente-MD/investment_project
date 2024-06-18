@@ -17,8 +17,8 @@ public class StockDTO {
     private StockSymbol stockSymbol;
     private Broker broker;
     private double quantity;
-    private double initialInvestmentValue;
     private LocalDate purchaseDate;
     private double purchasePrice;
     private Transaction transaction;
+    private double initialInvestmentValue = this.quantity * this.purchasePrice;
 }

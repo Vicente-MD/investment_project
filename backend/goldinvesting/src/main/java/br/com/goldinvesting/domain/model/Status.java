@@ -6,5 +6,6 @@ public enum Status {
     PENDING,        // Ativo aguardando alguma condição para ser ativo
     SOLD,           // Ativo que foi vendido
     PURCHASED,      // Ativo que foi comprado mas não está mais na carteira
-    UNDER_REVIEW    // Ativo que está sendo analisado
+    UNDER_REVIEW,    // Ativo que está sendo analisado
+    CONCLUDED,      // Ativo que foi concluído
 }

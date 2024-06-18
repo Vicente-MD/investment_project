@@ -1,9 +1,8 @@
-import { Box, Button, Grid, Input, InputAdornment, InputLabel, MenuItem, Modal, Select, SelectChangeEvent, Typography, createTheme } from '@mui/material';
+import { Box, Button, Grid, Input, InputAdornment, InputLabel, MenuItem, Modal, Select, SelectChangeEvent, createTheme } from '@mui/material';
 import { purple, yellow } from '@mui/material/colors';
 import React, { useState } from 'react';
-import { fetchBrokers, fetchStocksSymbols } from '../Services/api';
+import { createCheckingAccount, createFixedIncome, createStock, fetchBrokers, fetchStocksSymbols } from '../services/api';
 import AsyncAutoComplete from './AsyncAutoComplete';
-import AutoComplete from './AutoComplete';
 import BasicDatePicker from './DateTimePickerViewRenderers';
 
 interface CustomModalProps {
@@ -12,7 +11,6 @@ interface CustomModalProps {
 }
 
 const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
-
   const theme = createTheme({
     palette: {
       primary: yellow,
@@ -20,18 +18,96 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
     },
   });
 
-
   const [selectedLayout, setSelectedLayout] = useState<string>('Renda Fixa');
+
+  type LayoutType = 'rendaFixa' | 'acoes' | 'contaCorrente';
+
+  const [formData, setFormData] = useState<{
+    rendaFixa: {
+      broker: string;
+      initialDate: Date | null;
+      finalDate: Date | null;
+      initialValue: string;
+      yieldRate: string;
+      paper: string;
+    };
+    acoes: {
+      broker: string;
+      stockSymbol: string;
+      price: string;
+      purchaseDate: Date | null;
+      quantity: string;
+    };
+    contaCorrente: {
+      broker: string;
+      initialDate: Date | null;
+      endDate: Date | null;
+      initialValue: string;
+      yieldRate: string;
+      title: string;
+    };
+  }>({
+    rendaFixa: {
+      broker: '',
+      initialDate: null,
+      finalDate: null,
+      initialValue: '',
+      yieldRate: '',
+      paper: '',
+    },
+    acoes: {
+      broker: '',
+      stockSymbol: '',
+      price: '',
+      purchaseDate: null,
+      quantity: '',
+    },
+    contaCorrente: {
+      broker: '',
+      initialDate: null,
+      endDate: null,
+      initialValue: '',
+      yieldRate: '',
+      title: ''
+    },
+  });
 
   const handleSelectChange = (event: SelectChangeEvent) => {
     setSelectedLayout(event.target.value as string);
   };
 
   const handleClose = () => {
-    // Call onClose when the modal is closed
     onClose();
   };
 
+  const handleInputChange = (layout: LayoutType, field: string, value: any) => {
+    setFormData({
+      ...formData,
+      [layout]: {
+        ...formData[layout],
+        [field]: value,
+      },
+    });
+  };
+
+  const handleSubmit = (layout: string) => {
+    switch (layout) {
+      case 'rendaFixa':
+        createFixedIncome(formData.rendaFixa);
+        break;
+
+      case 'acoes':
+        createStock(formData.acoes);
+        break;
+
+      case 'contaCorrente':
+        createCheckingAccount(formData.contaCorrente);
+        break;
+
+      default:
+        break;
+    }
+  };
 
   const style = {
     position: 'absolute' as 'absolute',
@@ -52,14 +128,14 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
       open={open}
       onClose={handleClose}
       aria-labelledby="parent-modal-title"
-      aria-describedby="parent-modal-description">
+      aria-describedby="parent-modal-description"
+    >
       <Box sx={{ ...style, width: 600 }}>
         <Grid container spacing={2} justifyContent="center" alignItems="center">
           <Grid item xs={12}>
             <Select value={selectedLayout} onChange={handleSelectChange}>
               <MenuItem value="Renda Fixa">Renda Fixa (pré fixada)</MenuItem>
               <MenuItem value="Ações">Ações</MenuItem>
-              <MenuItem value="Tesouro Direto">Tesouro Direto</MenuItem>
               <MenuItem value="Conta Corrente">Conta Corrente</MenuItem>
             </Select>
           </Grid>
@@ -67,39 +143,65 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
             {selectedLayout === 'Renda Fixa' && (
               <>
                 <Grid container>
-                  <Grid item xs={12}>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AsyncAutoComplete valueKey='id' labelKey='name' labelText='Corretora' fetchOptions={fetchBrokers} />
-                  </Grid>
-                  <Grid item xs={6} sx={{ marginY: 2 }}>
-                    <BasicDatePicker label='Data Inicial' />
-                  </Grid>
-                  <Grid item xs={6} sx={{ marginY: 2 }}>
-                    <BasicDatePicker label='Data final' />
-                  </Grid>
-                  <Grid item xs={6} sx={{ marginY: 2 }}>
-                    <InputLabel htmlFor="standard-adornment-amount">Quantidade</InputLabel>
-                    <Input
-                      id="standard-adornment-amount"
-                      startAdornment={<InputAdornment position="start">R$</InputAdornment>}
+                  <Grid item xs={6}>
+                    <AsyncAutoComplete
+                      valueKey="id"
+                      labelKey="name"
+                      labelText="Corretora"
+                      fetchOptions={fetchBrokers}
+                      onChange={(value) => handleInputChange('rendaFixa', 'broker', value)}
                     />
                   </Grid>
                   <Grid item xs={6} sx={{ marginY: 2 }}>
-                    <InputLabel htmlFor="standard-adornment-amount">Valorização final</InputLabel>
+                    <InputLabel htmlFor="yieldRate">Papel</InputLabel>
                     <Input
-                      id="standard-adornment-amount"
+                      id="paper"
+                      value={formData.rendaFixa.paper}
+                      onChange={(e) => handleInputChange('rendaFixa', 'paper', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={6} sx={{ marginY: 2 }}>
+                    <BasicDatePicker
+                      label="Data Inicial"
+                      onChange={(value) => handleInputChange('rendaFixa', 'initialDate', value)}
+                    />
+                  </Grid>
+                  <Grid item xs={6} sx={{ marginY: 2 }}>
+                    <BasicDatePicker
+                      label="Data final"
+                      onChange={(value) => handleInputChange('rendaFixa', 'finalDate', value)}
+                    />
+                  </Grid>
+                  <Grid item xs={6} sx={{ marginY: 2 }}>
+                    <InputLabel htmlFor="initialValue">Valor</InputLabel>
+                    <Input
+                      id="initialValue"
+                      startAdornment={<InputAdornment position="start">R$</InputAdornment>}
+                      value={formData.rendaFixa.initialValue}
+                      onChange={(e) => handleInputChange('rendaFixa', 'initialValue', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={6} sx={{ marginY: 2 }}>
+                    <InputLabel htmlFor="yieldRate">Valorização final</InputLabel>
+                    <Input
+                      id="yieldRate"
                       endAdornment={<InputAdornment position="start">%</InputAdornment>}
+                      value={formData.rendaFixa.yieldRate}
+                      onChange={(e) => handleInputChange('rendaFixa', 'yieldRate', e.target.value)}
                     />
                   </Grid>
                   <Grid item xs={12} display="flex" justifyContent="flex-end" sx={{ marginY: 2 }}>
-                    <Button variant="contained" sx={{
-                      color: theme.palette.getContrastText(yellow[500]),
-                      backgroundColor: yellow[500],
-                      '&:hover': {
-                        backgroundColor: yellow[700],
-                      }
-                    }}>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        color: theme.palette.getContrastText(yellow[500]),
+                        backgroundColor: yellow[500],
+                        '&:hover': {
+                          backgroundColor: yellow[700],
+                        },
+                      }}
+                      onClick={() => handleSubmit('rendaFixa')}
+                    >
                       Adicionar
                     </Button>
                   </Grid>
@@ -109,144 +211,122 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
             {selectedLayout === 'Ações' && (
               <Grid container>
                 <Grid item xs={12}>
-                </Grid>
-                <Grid item xs={6} sx={{ marginTop: 2 }}>
-                  <AsyncAutoComplete valueKey='id' labelKey='name' labelText='Corretora' fetchOptions={fetchBrokers} />
-                </Grid>
-                <Grid item xs={6} sx={{ marginTop: 2 }}>
-                  <AsyncAutoComplete valueKey='id' labelKey='ticker' labelText='Ativo' fetchOptions={fetchStocksSymbols} />
-                </Grid>
-                <Grid item xs={6} sx={{ marginTop: 2 }}>
-                  <InputLabel htmlFor="standard-adornment-amount">Preço</InputLabel>
-                  <Input
-                    id="standard-adornment-amount"
-                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                    sx={{
-                      bottom: 0,
-                      left: 0,
-                      marginTop: 2,
-                      padding: 1,
-                    }}
+                  <AsyncAutoComplete
+                    valueKey="id"
+                    labelKey="name"
+                    labelText="Corretora"
+                    fetchOptions={fetchBrokers}
+                    onChange={(value) => handleInputChange('acoes', 'broker', value)}
                   />
                 </Grid>
                 <Grid item xs={6} sx={{ marginTop: 2 }}>
-                  <BasicDatePicker label='Data da compra' />
+                  <AsyncAutoComplete
+                    valueKey="id"
+                    labelKey="ticker"
+                    labelText="Ativo"
+                    fetchOptions={fetchStocksSymbols}
+                    onChange={(value) => handleInputChange('acoes', 'stockSymbol', value)}
+                  />
+                </Grid>
+                <Grid item xs={6} sx={{ marginTop: 2 }}>
+                  <InputLabel htmlFor="price">Preço</InputLabel>
+                  <Input
+                    id="price"
+                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                    value={formData.acoes.price}
+                    onChange={(e) => handleInputChange('acoes', 'price', e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={6} sx={{ marginTop: 2 }}>
+                  <BasicDatePicker
+                    label="Data da compra"
+                    onChange={(value) => handleInputChange('acoes', 'purchaseDate', value)}
+                  />
                 </Grid>
                 <Grid item xs={12} sx={{ marginTop: 2 }}>
-                  <InputLabel htmlFor="standard-adornment-amount">Quantidade</InputLabel>
+                  <InputLabel htmlFor="quantity">Quantidade</InputLabel>
                   <Input
-                    id="standard-adornment-amount"
-                    startAdornment={<InputAdornment position="start"></InputAdornment>}
-                    sx={{
-                      bottom: 0,
-                      left: 0,
-                      marginTop: 2,
-                      padding: 1,
-                    }}
+                    id="quantity"
+                    value={formData.acoes.quantity}
+                    onChange={(e) => handleInputChange('acoes', 'quantity', e.target.value)}
                   />
                 </Grid>
                 <Grid item xs={12} display="flex" justifyContent="flex-end" sx={{ marginY: 2 }}>
-                  <Button variant="contained" sx={{
-                    color: theme.palette.getContrastText(yellow[500]),
-                    backgroundColor: yellow[500],
-                    '&:hover': {
-                      backgroundColor: yellow[700],
-                    }
-                  }}>
-                    Adicionar
-                  </Button>
-                </Grid>
-              </Grid>
-            )}
-            {selectedLayout === 'Tesouro Direto' && (
-              <>
-                <Grid container>
-                  <Grid item xs={12}>
-                  </Grid>
-                  <Grid item xs={6} sx={{ marginTop: 2 }}>
-                    <Typography>broker</Typography>
-                    <AutoComplete />
-                  </Grid>
-                  <Grid item xs={6} sx={{ marginTop: 2 }}>
-                    <InputLabel htmlFor="standard-adornment-amount">Stock</InputLabel>
-                    <AutoComplete />
-                  </Grid>
-                  <Grid item xs={6} sx={{ marginY: 2 }}>
-                    <InputLabel htmlFor="standard-adornment-amount">Initial Date</InputLabel>
-                    <BasicDatePicker label='select Initial Date' />
-                  </Grid>
-                  <Grid item xs={6} sx={{ marginY: 2 }}>
-                    <InputLabel htmlFor="standard-adornment-amount">Final Date</InputLabel>
-                    <BasicDatePicker label='select Final Date' />
-                  </Grid>
-                  <Grid item xs={6} sx={{ marginY: 2 }}>
-                    <InputLabel htmlFor="standard-adornment-amount">Amount</InputLabel>
-                    <Input
-                      id="standard-adornment-amount"
-                      startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                    />
-                  </Grid>
-                  <Grid item xs={6} sx={{ marginY: 2 }}>
-                    <InputLabel htmlFor="standard-adornment-amount">Total Investment</InputLabel>
-                    <Input
-                      id="standard-adornment-amount"
-                      startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                    />
-                  </Grid>
-                  <Grid item xs={12} display="flex" justifyContent="flex-end" sx={{ marginY: 2 }}>
-                    <Button variant="contained" sx={{
+                  <Button
+                    variant="contained"
+                    sx={{
                       color: theme.palette.getContrastText(yellow[500]),
                       backgroundColor: yellow[500],
                       '&:hover': {
                         backgroundColor: yellow[700],
-                      }
-                    }}>
-                      Adicionar
-                    </Button>
-                  </Grid>
-                </Grid>
-              </>
-            )}
-            {selectedLayout === 'Conta Corrente' && (
-              <Grid container>
-                <Grid item xs={12}>
-                </Grid>
-                <Grid item xs={12}>
-                  <AsyncAutoComplete valueKey='id' labelKey='name' labelText='Corretora' fetchOptions={fetchBrokers} />
-                </Grid>
-                <Grid item xs={6} sx={{ marginY: 2 }}>
-                  <BasicDatePicker label='Data inicial' />
-                </Grid>
-                <Grid item xs={6} sx={{ marginY: 2 }}>
-                  <BasicDatePicker label='Data final' />
-                </Grid>
-                <Grid item xs={6} sx={{ marginY: 2 }}>
-                  <InputLabel htmlFor="standard-adornment-amount">Valor Inicial</InputLabel>
-                  <Input
-                    id="standard-adornment-amount"
-                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                  />
-                </Grid>
-                <Grid item xs={6} sx={{ marginY: 2 }}>
-                  <InputLabel htmlFor="standard-adornment-amount">Taxa de valorização mensal</InputLabel>
-                  <Input
-                    id="standard-adornment-amount"
-                    endAdornment={<InputAdornment position="start">%</InputAdornment>}
-                  />
-                </Grid>
-                <Grid item xs={12} display="flex" justifyContent="flex-end" sx={{ marginY: 2 }}>
-                  <Button variant="contained" sx={{
-                    color: theme.palette.getContrastText(yellow[500]),
-                    backgroundColor: yellow[500],
-                    '&:hover': {
-                      backgroundColor: yellow[700],
-                    }
-                  }}>
+                      },
+                    }}
+                    onClick={() => handleSubmit('acoes')}
+                  >
                     Adicionar
                   </Button>
                 </Grid>
               </Grid>
-
+            )}
+            {selectedLayout === 'Conta Corrente' && (
+              <Grid container>
+                <Grid item xs={12}>
+                  <AsyncAutoComplete
+                    valueKey="id"
+                    labelKey="name"
+                    labelText="Corretora"
+                    fetchOptions={fetchBrokers}
+                    onChange={(value) => handleInputChange('contaCorrente', 'broker', value)}
+                  />
+                </Grid>
+                <Grid item xs={6} sx={{ marginY: 2 }}>
+                  <InputLabel htmlFor="title">Título</InputLabel>
+                  <Input
+                    id="title"
+                    value={formData.contaCorrente.title}
+                    onChange={(e) => handleInputChange('contaCorrente', 'title', e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={6} sx={{ marginY: 2 }}>
+                  <BasicDatePicker
+                    label="Data inicial"
+                    onChange={(value) => handleInputChange('contaCorrente', 'initialDate', value)}
+                  />
+                </Grid>
+                <Grid item xs={6} sx={{ marginY: 2 }}>
+                  <InputLabel htmlFor="initialValue">Valor Inicial</InputLabel>
+                  <Input
+                    id="initialValue"
+                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                    value={formData.contaCorrente.initialValue}
+                    onChange={(e) => handleInputChange('contaCorrente', 'initialValue', e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={6} sx={{ marginY: 2 }}>
+                  <InputLabel htmlFor="yieldRate">Taxa de valorização mensal</InputLabel>
+                  <Input
+                    id="yieldRate"
+                    endAdornment={<InputAdornment position="start">%</InputAdornment>}
+                    value={formData.contaCorrente.yieldRate}
+                    onChange={(e) => handleInputChange('contaCorrente', 'yieldRate', e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} display="flex" justifyContent="flex-end" sx={{ marginY: 2 }}>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      color: theme.palette.getContrastText(yellow[500]),
+                      backgroundColor: yellow[500],
+                      '&:hover': {
+                        backgroundColor: yellow[700],
+                      },
+                    }}
+                    onClick={() => handleSubmit('contaCorrente')}
+                  >
+                    Adicionar
+                  </Button>
+                </Grid>
+              </Grid>
             )}
           </Grid>
         </Grid>
@@ -256,4 +336,3 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
 };
 
 export default CustomModal;
-

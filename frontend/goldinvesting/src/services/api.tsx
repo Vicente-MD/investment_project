@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api'; 
+const API_BASE_URL = 'http://localhost:8080/api';
 
 export const fetchInvestments = async () => {
   //const response = await axios.get(`${API_BASE_URL}/investments`);
@@ -17,42 +17,14 @@ export const fetchInvestments = async () => {
 };
 
 export const fetchAccordionItems = async () => {
-  //const response = await axios.get(`${API_BASE_URL}/accordionItems`);
-  //return response.data;
+  const response = await axios.get(`${API_BASE_URL}/my-investments/all/1`);
+  console.log(response.data);
+  return response.data;
+};
 
-  const mockAccordionItems = [
-    {
-      title: 'Renda Fixa',
-      rows: [
-        { id: 1, name: 'Item 1', value: 80 },
-        { id: 2, name: 'Item 2', value: 15 },
-      ],
-    },
-    {
-      title: 'Ações',
-      rows: [
-        { id: 3, name: 'Item 3', value: 10 },
-        { id: 4, name: 'Item 4', value: 15 },
-      ],
-    },
-    {
-      title: 'Tesouro Direto',
-      rows: [
-        { id: 5, name: 'Item 5', value: 10 },
-        { id: 6, name: 'Item 6', value: 15 },
-      ],
-    },
-    {
-      title: 'Conta Corrente',
-      rows: [
-        { id: 7, name: 'Item 5', value: 10 },
-        { id: 8, name: 'Item 6', value: 15 },
-      ],
-    },
-  ];
-
-  return mockAccordionItems;
-
+export const fetchInvestmentHistory = async () => {
+  const response = await axios.get(`${API_BASE_URL}/my-investments/all/1`);
+  return response.data;
 };
 
 export const fetchBrokers = async (input: string) => {
@@ -62,5 +34,20 @@ export const fetchBrokers = async (input: string) => {
 
 export const fetchStocksSymbols = async (input: string) => {
   const response = await axios.get(`${API_BASE_URL}/stocks-symbols/get-by-text?input=${input}`);
+  return response.data;
+};
+
+export const createStock = async (data: any) => {
+  const response = await axios.post(`${API_BASE_URL}/stocks/1`, data);
+  return response.data;
+};
+
+export const createFixedIncome = async (data: any) => {
+  const response = await axios.post(`${API_BASE_URL}/fixed-incomes/1`, data);
+  return response.data;
+};
+
+export const createCheckingAccount = async (data: any) => {
+  const response = await axios.post(`${API_BASE_URL}/checking-accounts/1`, data);
   return response.data;
 };

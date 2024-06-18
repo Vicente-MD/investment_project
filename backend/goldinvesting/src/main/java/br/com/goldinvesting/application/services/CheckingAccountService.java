@@ -2,8 +2,13 @@ package br.com.goldinvesting.application.services;
 
 import br.com.goldinvesting.application.dto.CheckingAccountDTO;
 import br.com.goldinvesting.application.dto.converter.CheckingAccountConverter;
+import br.com.goldinvesting.application.dto.converter.CheckingAccountConverter;
 import br.com.goldinvesting.application.ports.in.CheckingAccountUseCase;
+import br.com.goldinvesting.application.ports.out.BrokerRepository;
 import br.com.goldinvesting.application.ports.out.CheckingAccountRepository;
+import br.com.goldinvesting.application.ports.out.CheckingAccountSymbolRepository;
+import br.com.goldinvesting.application.ports.out.TransactionRepository;
+import br.com.goldinvesting.application.ports.out.UserRepository;
 import br.com.goldinvesting.domain.model.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,42 +20,31 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CheckingAccountService implements CheckingAccountUseCase {
     private final CheckingAccountRepository checkingAccountRepository;
-//    private final TransactionRepository transactionRepository;
-//    private final InvestmentTypeRepository investmentTypeRepository;
-//    private final StatusRepository statusRepository;
+    private final TransactionRepository transactionRepository;
+    private final UserRepository userRepository;
+    private final BrokerRepository brokerRepository;
 
     @Transactional
     @Override
-    public CheckingAccount createCheckingAccount(CheckingAccountDTO checkingAccountDTO) {
+    public CheckingAccountDTO createCheckingAccount(CheckingAccountDTO checkingAccountDTO, long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Broker broker = brokerRepository.findById(checkingAccountDTO.getBroker().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Broker not found"));
+
         CheckingAccount checkingAccount = CheckingAccountConverter.toEntity(checkingAccountDTO);
-        CheckingAccount savedCheckingAccount = checkingAccountRepository.save(checkingAccount);
+        checkingAccount.setBroker(broker);
+        checkingAccount.setInvestmentType(InvestmentType.STOCK);
 
-//        Investment investment = new Investment(
-//                savedCheckingAccount.getId(),
-//                savedCheckingAccount.getTitle(),
-//                savedCheckingAccount.getYieldRate(),
-//                savedCheckingAccount.getInitialDate().toString(),
-//                savedCheckingAccount.getInitialValue(),
-//                savedCheckingAccount.getBroker(),
-//                null,
-//                null,
-//                null,
-//                null,
-//                0,
-//                0
-//        );
+        CheckingAccount checkingAccountSaved = checkingAccountRepository.save(checkingAccount);
 
+        Transaction transaction = new Transaction();
+        transaction.setUser(user);
+        transaction.setStatus(Status.ACTIVE);
+        transaction.setInvestment(checkingAccount);
 
-//        InvestmentType investmentType = investmentTypeRepository.findByInvestmentType("CHECKING_ACCOUNT")
-//                .orElseThrow(() -> new IllegalStateException("Investment type CHECKING_ACCOUNT not found"));
-//        Status status = statusRepository.findByStatus("ACTIVE")
-//                .orElseThrow(() -> new IllegalStateException("Status ACTIVE not found"));
-//
-//        String id = investmentType.getId() + String.valueOf(investment.getId());
-//        Transaction transaction = new Transaction(Long.parseLong(id), investment, investmentType, checkingAccountDTO.getUser().getWallet(), status);
-//        transactionRepository.save(transaction);
+        transactionRepository.save(transaction);
 
-        return savedCheckingAccount;
+        return CheckingAccountConverter.toDTO(checkingAccountSaved);
     }
 
     @Transactional
@@ -75,6 +69,8 @@ public class CheckingAccountService implements CheckingAccountUseCase {
     @Transactional
     @Override
     public void concludeCheckingAccount(long id) {
-//        transactionRepository.setStatus(Status.SOLD, 2L);
+        var transaction = transactionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
+        transaction.setStatus(Status.CONCLUDED);
+        transactionRepository.save(transaction);
     }
 }

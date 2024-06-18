@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchData, DataResponse, Quote, News } from '../../Services/StockService';
+import { fetchData, DataResponse, Quote, News } from '../../services/StockService';
 import { Card, CardContent, Container, Grid, Typography } from '@mui/material';
 const App: React.FC = () => {
   const [data, setData] = useState<DataResponse | null>(null);

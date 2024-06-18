@@ -18,11 +18,11 @@ class UsuarioService extends Api {
   }
 
   autenticar(credenciais: Credenciais): Promise<any> {
-    return this.post("/user/authenticate", credenciais);
+    return this.post("/users/authenticate", credenciais);
   }
 
   cadastrarUsuario(usuario: Usuario): Promise<any> {
-    return this.post("/user", usuario);
+    return this.post("/users", usuario);
   }
 
   historicoDaCarteira(idCarteira: string): Promise<any> {

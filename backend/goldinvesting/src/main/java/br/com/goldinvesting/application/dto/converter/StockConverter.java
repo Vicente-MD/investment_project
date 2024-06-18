@@ -15,10 +15,10 @@ public class StockConverter {
                 stock.getStockSymbol(),
                 stock.getBroker(),
                 stock.getQuantity(),
-                stock.getInitialInvestmentValue(),
                 stock.getPurchaseDate(),
                 stock.getPurchasePrice(),
-                null
+                null,
+                stock.getInitialInvestmentValue()
         );
     }
 
