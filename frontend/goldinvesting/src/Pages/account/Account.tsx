@@ -3,30 +3,66 @@ import Avatar from '@mui/material/Avatar';
 import Button, { ButtonProps } from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
-import {  yellow } from '@mui/material/colors';
+import { yellow } from '@mui/material/colors';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CustomColorButton from '../../Components/CustomColorButton';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateUser } from '../../features/actions/userActions'; // Adjust the path according to your file structure
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const defaultTheme = createTheme();
 
+interface UserState {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface RootState {
+  user: {
+    user: {
+      data: UserState;
+      error: string | null;
+      isAuthenticated: boolean;
+    }
+  };
+}
+
 export default function SignUp() {
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user.user.data);
+
+  const { name, email, password } = user;
+
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleToggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('firstName'),
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const updatedUser = {
+      name: data.get('firstName') as string,
+      email: data.get('email') as string,
+      password: data.get('password') as string,
+    };
+    //dispatch(updateUser(updatedUser));
   };
 
   const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
@@ -36,7 +72,6 @@ export default function SignUp() {
       backgroundColor: yellow[700],
     },
   }));
-
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -51,7 +86,7 @@ export default function SignUp() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: yellow[500] }}>
-            <AccountCircleIcon/>
+            <AccountCircleIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Account
@@ -67,6 +102,7 @@ export default function SignUp() {
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  defaultValue={name}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -77,16 +113,7 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="CPF"
-                  label="CPF"
-                  type="CPF"
-                  id="CPF"
+                  defaultValue={email}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -95,9 +122,23 @@ export default function SignUp() {
                   fullWidth
                   name="password"
                   label="Password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   autoComplete="new-password"
+                  defaultValue={password}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleTogglePasswordVisibility}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -106,9 +147,22 @@ export default function SignUp() {
                   fullWidth
                   name="Confirm password"
                   label="Confirm Password"
-                  type="Confirm password"
+                  type={showConfirmPassword ? "text" : "password"}
                   id="Confirm password"
                   autoComplete="new-password"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle confirm password visibility"
+                          onClick={handleToggleConfirmPasswordVisibility}
+                          edge="end"
+                        >
+                          {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
             </Grid>
