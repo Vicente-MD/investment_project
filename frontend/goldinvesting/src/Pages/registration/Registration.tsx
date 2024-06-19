@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button, { ButtonProps } from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,12 +11,13 @@ import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
 import { yellow } from '@mui/material/colors';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CustomColorButton from '../../Components/CustomColorButton';
-import ErrosValidacaoException from '../../app/service/errosValidacao';
-import UsuarioService from '../../app/service/usuarioService';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../store/store';
+import { registerUser } from '../../features/user/userSlice';
 
 interface Usuario {
   name: string;
@@ -27,30 +28,31 @@ interface Usuario {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const [usuario, setUsuario] = React.useState<Usuario>({
+  const [usuario, setUsuario] = useState<Usuario>({
     name: '',
     email: '',
     password: '',
   });
-  const [loading, setLoading] = React.useState(false);
-  const usuarioService = new UsuarioService();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
+  const registerError = useSelector((state: RootState) => state.user.error);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
 
     try {
-      usuarioService.validar(usuario);
-      await usuarioService.cadastrarUsuario(usuario);
-      toast.success('Usuário cadastrado com sucesso!');
-      setTimeout(() => navigate('/home'), 2500);
-    } catch (error) {
-      if (error instanceof ErrosValidacaoException) {
-        error.errors.forEach((err: string) => toast.error(err));
+      // Dispatch registerUser thunk
+      const resultAction = await dispatch(registerUser(usuario));
+      if (registerUser.fulfilled.match(resultAction)) {
+        toast.success('Usuário cadastrado com sucesso!');
+        setTimeout(() => navigate('/home'), 2500);
       } else {
         toast.error('Erro ao cadastrar usuário. Tente novamente mais tarde.');
       }
+    } catch (error) {
+      toast.error('Erro ao cadastrar usuário. Tente novamente mais tarde.');
     } finally {
       setLoading(false);
     }

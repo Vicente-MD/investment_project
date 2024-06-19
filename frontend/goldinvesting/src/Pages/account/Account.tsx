@@ -20,6 +20,12 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const defaultTheme = createTheme();
 
+interface Usuario {
+  name: string;
+  email: string;
+  password: string;
+}
+
 interface UserState {
   id: string;
   name: string;
@@ -57,12 +63,12 @@ export default function SignUp() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const updatedUser = {
+    const Usuario = {
       name: data.get('firstName') as string,
       email: data.get('email') as string,
       password: data.get('password') as string,
     };
-    //dispatch(updateUser(updatedUser));
+    //dispatch(updateUser(Usuario));
   };
 
   const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({

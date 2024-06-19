@@ -15,6 +15,7 @@ import imagem1 from "../../shared/images/Carteira.png";
 import CustomColorButton from '../../Components/CustomColorButton';
 import "./login.css";
 import Logo from '../../shared/images/logo.png';
+import LocalStorageService from '../../app/service/localStorageService';
 
 const Login: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

@@ -29,7 +29,7 @@ import {
   YAxis,
 } from 'recharts';
 import { toast } from 'react-toastify';
-import { concludeCheckingAccount, deleteFixedIncome, sellStock } from '../services/api';
+import { concludeCheckingAccount, deleteFixedIncome, sellStock } from '../Services/api';
 import { translateType } from '../utils/utils';
 
 interface AccordionItem {

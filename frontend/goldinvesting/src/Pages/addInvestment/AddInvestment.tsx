@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
 import { fetchAccordionItemsData } from '../../features/Investments/InvestmentsSlice';
 import CustomModal from '../../Components/CustomModal';
-import { fetchCheckingAccounts, fetchFixedIncomes, fetchStocks } from '../../services/api';
+import { fetchCheckingAccounts, fetchFixedIncomes, fetchStocks } from '../../Services/api';
 
 const theme = createTheme({
   palette: {
