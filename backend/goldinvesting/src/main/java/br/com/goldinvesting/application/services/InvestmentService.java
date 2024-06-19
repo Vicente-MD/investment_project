@@ -51,7 +51,8 @@ public class InvestmentService implements InvestmentUseCase {
     }
 
     @Override
-    public List<InvestmentDataDTO> getStockHistory(Stock stock, List<InvestmentDataDTO> generalHistory, Transaction transaction) {
+    public List<InvestmentDataDTO> getStockHistory(Stock stock, List<InvestmentDataDTO> generalHistory,
+            Transaction transaction) {
         List<StockData> stockHistory = stockDataRepository.findByStockSymbolId(stock.getStockSymbol().getId());
 
         List<InvestmentDataDTO> filteredStockHistory = stockHistory.stream()
@@ -74,9 +75,11 @@ public class InvestmentService implements InvestmentUseCase {
         Calendar to = stringToCalendar(fixedIncome.getFinalDate().toString());
         Calendar now = Calendar.getInstance();
 
+        if (to.after(now)) {
+            to = now;
+        }
+
         int totalMonths = (to.get(Calendar.YEAR) * 12 + to.get(Calendar.MONTH))
-                - (from.get(Calendar.YEAR) * 12 + from.get(Calendar.MONTH));
-        int monthsForNow = (now.get(Calendar.YEAR) * 12 + now.get(Calendar.MONTH))
                 - (from.get(Calendar.YEAR) * 12 + from.get(Calendar.MONTH));
 
         double yieldRate = (fixedIncome.getYieldRate() / 100) + 1;
@@ -87,12 +90,12 @@ public class InvestmentService implements InvestmentUseCase {
         double value = fixedIncome.getInitialValue();
 
         List<InvestmentDataDTO> hist = new ArrayList<>();
-        while (monthsForNow > 0) {
+        while (totalMonths > 0) {
             hist.add(new InvestmentDataDTO(from.get(Calendar.YEAR), from.get(Calendar.MONTH) + 1, value, 0,
                     InvestmentType.FIXED_INCOME, transaction.getId()));
             value += gainPerMonth;
             from.add(Calendar.MONTH, 1);
-            monthsForNow--;
+            totalMonths--;
         }
 
         List<InvestmentDataDTO> histToReturn = new ArrayList<>(generalHistory);
@@ -103,7 +106,7 @@ public class InvestmentService implements InvestmentUseCase {
 
     @Override
     public List<InvestmentDataDTO> getCheckingAccountHistory(
-        CheckingAccount checkingAccount,
+            CheckingAccount checkingAccount,
             List<InvestmentDataDTO> generalHistory,
             Transaction transaction) {
         Calendar from = stringToCalendar(checkingAccount.getInitialDate().toString());
@@ -139,9 +142,11 @@ public class InvestmentService implements InvestmentUseCase {
             } else if (transaction.getInvestment() instanceof Stock) {
                 allHistories = getStockHistory((Stock) transaction.getInvestment(), allHistories, transaction);
             } else if (transaction.getInvestment() instanceof FixedIncome) {
-                allHistories = getFixedIncomeHistory((FixedIncome) transaction.getInvestment(), allHistories, transaction);
+                allHistories = getFixedIncomeHistory((FixedIncome) transaction.getInvestment(), allHistories,
+                        transaction);
             } else if (transaction.getInvestment() instanceof CheckingAccount) {
-                allHistories = getCheckingAccountHistory((CheckingAccount) transaction.getInvestment(), allHistories, transaction);
+                allHistories = getCheckingAccountHistory((CheckingAccount) transaction.getInvestment(), allHistories,
+                        transaction);
             }
         }
 

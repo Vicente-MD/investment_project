@@ -5,20 +5,45 @@ import {
   CircularProgress
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { PieChart } from '@mui/x-charts/PieChart';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
 import { fetchAccordionItemsData } from '../../features/Investments/InvestmentsSlice';
 import NewsCarousel from '../../Components/NewsCarousel';
+import { fetchAccordionItems } from '../../services/api';
+import { toast } from 'react-toastify';
 
 const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { transformedData, status, error } = useSelector((state: RootState) => state.investments);
   const user = useSelector((state: RootState) => state.user.user.data);
+  const [investmentData, setInvestmentData] = useState<any[]>([]);
 
   useEffect(() => {
     dispatch(fetchAccordionItemsData(user.id));
+    fetchAccordionItems(user.id)
+      .then((data) => {
+        const lineData = groupByMonthYear(data);
+        console.log(lineData);
+        setInvestmentData(lineData);
+      })
+      .catch((error) => {
+        toast.error('Erro ao buscar dados de investimentos');
+      });
   }, [dispatch, user.id]);
+
+  const groupByMonthYear = (data: any[]) => {
+    return data.reduce((acc: any[], item: any) => {
+      const date = `${item.month}/${item.year}`;
+      const existingItem = acc.find((i: any) => i.date === date);
+      if (existingItem) {
+        existingItem.price += Math.round(item.price * 100) / 100;
+      } else {
+        acc.push({ date, price: Math.round(item.price * 100) / 100});
+      }
+      return acc;
+    }, []);
+  };
 
   const [news, setNews] = useState<JSX.Element[]>([
     <div>News 1</div>,
@@ -55,24 +80,14 @@ const Home = () => {
       <Grid container spacing={4} sx={{ width: '100%' }}>
         <Grid item xs={12}>
           <Paper sx={{ width: '100%', padding: 2, backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#fff' }}>
-            <PieChart
-              series={[
-                {
-                  data: transformedData,
-                  highlightScope: { faded: 'global', highlighted: 'item' },
-                  faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
-                },
-              ]}
-              height={400}
-              margin={{ top: 100, bottom: 100, left: 100, right: 100 }} // Set margins as needed
-              slotProps={{
-                legend: {
-                  direction: 'column', // Arranges the legend items in a column
-                  position: { vertical: 'middle', horizontal: 'right' }, // Positions the legend to the right middle
-                  padding: -10, // Adjust padding as needed
-                },
-              }}
-            />
+            <LineChart data={investmentData} width={800} height={400}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="price" name="Valor" stroke="#8884d8" />
+            </LineChart>
           </Paper>
         </Grid>
         <Grid item xs={12}>
@@ -80,45 +95,7 @@ const Home = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <Grid container spacing={2}>
-                  {Array.from({ length: 4 }).map((_, index) => (
-                    <Grid item xs={12} sm={6} key={index}>
-                      <Card >
-                        <CardContent>
-                          <Typography gutterBottom variant="h5" component="div">
-                            Card {index + 1}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            This is a media card. You can use this section to describe the content.
-                          </Typography>
-                        </CardContent>
-                        <CardActions>
-                          <Button size="small">Share</Button>
-                          <Button size="small">Learn More</Button>
-                        </CardActions>
-                      </Card>
-                    </Grid>
-                  ))}
                 </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <PieChart
-                  series={[
-                    {
-                      data: transformedData,
-                      highlightScope: { faded: 'global', highlighted: 'item' },
-                      faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
-                    },
-                  ]}
-                  height={400}
-                  margin={{ top: 100, bottom: 100, left: 100, right: 100 }} // Set margins as needed
-                  slotProps={{
-                    legend: {
-                      direction: 'column', // Arranges the legend items in a column
-                      position: { vertical: 'middle', horizontal: 'right' }, // Positions the legend to the right middle
-                      padding: -10, // Adjust padding as needed
-                    },
-                  }}
-                />
               </Grid>
             </Grid>
             <NewsCarousel />

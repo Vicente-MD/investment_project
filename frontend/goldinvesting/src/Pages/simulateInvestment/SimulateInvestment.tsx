@@ -11,7 +11,7 @@ import {
 import CustomColorButton from '../../Components/CustomColorButton';
 import { PieChart } from '@mui/x-charts/PieChart';
 
-// Investment calculation functions
+// Funções de cálculo de investimento
 function calculateAnnualRate(monthlyRate: number): number {
   return (Math.pow(1 + monthlyRate / 100, 12) - 1) * 100;
 }
@@ -101,14 +101,14 @@ const InvestmentCalculator: React.FC = () => {
   return (
     <Container maxWidth="sm" sx={{ marginTop: 8 }}>
       <Paper elevation={3} sx={{ padding: 4 }}>
-        <Typography variant="h4" gutterBottom>Investment Calculator</Typography>
+        <Typography variant="h4" gutterBottom>Calculadora de Investimentos</Typography>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 name="valorinvestido"
-                label="Initial Investment"
+                label="Investimento Inicial"
                 value={formValues.valorinvestido}
                 onChange={handleInputChange}
                 required
@@ -119,7 +119,7 @@ const InvestmentCalculator: React.FC = () => {
               <TextField
                 fullWidth
                 name="taxainflacao"
-                label="Monthly Inflation Rate"
+                label="Taxa de Inflação Mensal"
                 value={formValues.taxainflacao}
                 onChange={handleInputChange}
                 type="number"
@@ -129,7 +129,7 @@ const InvestmentCalculator: React.FC = () => {
               <TextField
                 fullWidth
                 name="aporteperiodico"
-                label="Monthly Contribution"
+                label="Aporte Mensal"
                 value={formValues.aporteperiodico}
                 onChange={handleInputChange}
                 type="number"
@@ -139,7 +139,7 @@ const InvestmentCalculator: React.FC = () => {
               <TextField
                 fullWidth
                 name="tempo"
-                label="Investment Period (months)"
+                label="Período de Investimento (meses)"
                 value={formValues.tempo}
                 onChange={handleInputChange}
                 required
@@ -150,7 +150,7 @@ const InvestmentCalculator: React.FC = () => {
               <TextField
                 fullWidth
                 name="taxajuros"
-                label="Monthly Interest Rate"
+                label="Taxa de Juros Mensal"
                 value={formValues.taxajuros}
                 onChange={handleInputChange}
                 required
@@ -158,28 +158,28 @@ const InvestmentCalculator: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <CustomColorButton type="submit">Calculate</CustomColorButton>
+              <CustomColorButton type="submit">Calcular</CustomColorButton>
             </Grid>
           </Grid>
         </form>
         {modalError && (
           <Typography variant="body1" color="error" sx={{ mt: 2 }}>
-            Please fill in all required fields with valid numbers.
+            Por favor, preencha todos os campos obrigatórios com números válidos.
           </Typography>
         )}
         {modalSimulateInvestment && (
           <Box sx={{ mt: 4 }}>
-            <Typography variant="h6">Results:</Typography>
-            <Typography variant="body1">Future Value: {result.futureValue?.toFixed(2)}</Typography>
-            <Typography variant="body1">Total Invested: {result.totalInvested?.toFixed(2)}</Typography>
-            <Typography variant="body1">Gross Profit: {result.grossProfit?.toFixed(2)}</Typography>
+            <Typography variant="h6">Resultados:</Typography>
+            <Typography variant="body1">Valor Futuro: {result.futureValue?.toFixed(2)}</Typography>
+            <Typography variant="body1">Total Investido: {result.totalInvested?.toFixed(2)}</Typography>
+            <Typography variant="body1">Lucro Bruto: {result.grossProfit?.toFixed(2)}</Typography>
             <PieChart
               series={[
                 {
                   data: [
-                    { id: 'Future Value', value: result.futureValue || 0, label: 'Future Value' },
-                    { id: 'Total Invested', value: result.totalInvested || 0, label: 'Total Invested' },
-                    { id: 'Gross Profit', value: result.grossProfit || 0, label: 'Gross Profit' }
+                    { id: 'Future Value', value: result.futureValue || 0, label: 'Valor Futuro' },
+                    { id: 'Total Invested', value: result.totalInvested || 0, label: 'Total Investido' },
+                    { id: 'Gross Profit', value: result.grossProfit || 0, label: 'Lucro Bruto' }
                   ],
                   highlightScope: { faded: 'global', highlighted: 'item' },
                   faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' }

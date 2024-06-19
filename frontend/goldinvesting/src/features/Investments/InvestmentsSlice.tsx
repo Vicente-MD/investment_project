@@ -1,6 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchAccordionItems } from '../../Services/api';
-import { RootState } from '../../store/store';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { fetchAccordionItems } from '../../services/api';
 
 interface Investment {
   id: number;
@@ -35,9 +34,9 @@ const getLastValues = (items: AccordionItem[]): AccordionItem[] => {
 
   items.forEach(item => {
     const key = item.investmentType;
-    if (!lastValues[key] || 
-        item.year > lastValues[key].year || 
-        (item.year === lastValues[key].year && item.month > lastValues[key].month)) {
+    if (!lastValues[key] ||
+      item.year > lastValues[key].year ||
+      (item.year === lastValues[key].year && item.month > lastValues[key].month)) {
       lastValues[key] = item;
     }
   });

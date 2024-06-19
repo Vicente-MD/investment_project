@@ -20,7 +20,7 @@ const initialState: NewsState = {
 };
 
 export const fetchNews = createAsyncThunk('news/fetchNews', async () => {
-  const response = await fetch('https://newsapi.org/v2/everything?q=financeiro&apiKey=572353a32aed49179c9463f5eee0e609');
+  const response = await fetch('https://newsapi.org/v2/everything?q=mercado financeiro&apiKey=572353a32aed49179c9463f5eee0e609');
   const result = await response.json();
   return result.articles.filter((article: Article) => article.title !== '[Removed]');
 });

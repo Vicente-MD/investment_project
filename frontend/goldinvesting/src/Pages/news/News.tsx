@@ -31,7 +31,7 @@ function News() {
   return (
     <>
       <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography variant="h3" component="h3" sx={{ mt: '6vh', mb: '3vh', textAlign: 'center', fontWeight: 800 }}>News</Typography>
+        <Typography variant="h3" component="h3" sx={{ mt: '6vh', mb: '3vh', textAlign: 'center', fontWeight: 800 }}>Notícias</Typography>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
           {articles.map((article) => (
             <Link href={article.url} underline="none" target="_blank" color="inherit" key={article.url} sx={{ mb: 2, width: '65%', textDecoration: 'none' }}>
