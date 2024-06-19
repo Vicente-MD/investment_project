@@ -4,10 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { authenticateUser } from '../../features/actions/userActions';
 import {
-  TextField, Container, Typography, Box, Grid, Paper, styled, Link, AppBar, Toolbar, CircularProgress
+  TextField, Container, Typography, Box, Grid, Paper, styled, Link, AppBar, Toolbar, CircularProgress, IconButton, InputAdornment
 } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import imagem1 from "../../shared/images/Carteira.png";
 import CustomColorButton from '../../Components/CustomColorButton';
 import "./login.css";
@@ -21,6 +23,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -45,6 +48,10 @@ const Login: React.FC = () => {
     setLoading(true);
     const credenciais = { email: username, password };
     dispatch(authenticateUser(credenciais));
+  };
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const Item = styled(Paper)(({ theme }) => ({
@@ -93,11 +100,24 @@ const Login: React.FC = () => {
               <TextField
                 label="Senha"
                 variant="outlined"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 margin="normal"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
               {error && (
                 <Typography color="error" variant="body2" gutterBottom>
