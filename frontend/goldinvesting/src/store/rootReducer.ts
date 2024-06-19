@@ -1,9 +1,12 @@
-// src/store/rootReducer.ts
 import { combineReducers } from '@reduxjs/toolkit';
-import authReducer from '../features/auth/AuthSlice';
+import userReducer from '../Features/user/userSlice';
+import newsReducer from '../Features/news/NewsSlice';
+import investmentsReducer from '../Features/Investments/InvestmentsSlice';
 
 const rootReducer = combineReducers({
-  auth: authReducer,
+  user: userReducer,
+  news: newsReducer,
+  investments: investmentsReducer,
 });
 
 export default rootReducer;

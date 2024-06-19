@@ -12,7 +12,7 @@ import { yellow } from '@mui/material/colors';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CustomColorButton from '../../Components/CustomColorButton';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateUser } from '../../features/actions/userActions'; // Adjust the path according to your file structure
+import { updateUser } from '../../Features/actions/userActions'; // Adjust the path according to your file structure
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
@@ -45,7 +45,10 @@ interface RootState {
 
 export default function SignUp() {
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.user.user.data);
+  const user = useSelector((state: RootState) => state.user.user.data) || { name: '', email: '', password: '' };
+
+  // Log user data to verify during testing
+  console.log('User data:', user);
 
   const { name, email, password } = user;
 
@@ -97,7 +100,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Account
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" noValidate onSubmit={handleSubmit} role="form" sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -132,6 +135,7 @@ export default function SignUp() {
                   id="password"
                   autoComplete="new-password"
                   defaultValue={password}
+                  inputProps={{ 'data-testid': 'password' }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -156,6 +160,7 @@ export default function SignUp() {
                   type={showConfirmPassword ? "text" : "password"}
                   id="Confirm password"
                   autoComplete="new-password"
+                  inputProps={{ 'data-testid': 'confirm-password' }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">

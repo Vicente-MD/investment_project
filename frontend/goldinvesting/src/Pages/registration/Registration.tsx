@@ -17,7 +17,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
-import { registerUser } from '../../features/user/userSlice';
+import { registerUser } from '../../Features/user/userSlice';
 
 interface Usuario {
   name: string;

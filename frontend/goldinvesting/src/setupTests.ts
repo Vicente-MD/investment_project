@@ -5,3 +5,4 @@ import '@testing-library/jest-dom/extend-expect';
 jest.mock('@mui/x-charts/PieChart', () => ({
   PieChart: jest.fn().mockImplementation(({ children }) => children),
 }));
+jest.mock('axios');

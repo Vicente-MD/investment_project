@@ -7,7 +7,7 @@ import { CssBaseline } from '@mui/material';
 import { Provider } from 'react-redux';
 import { store, persistor } from './store/store'; // Updated import
 import { PersistGate } from 'redux-persist/integration/react'; // Import PersistGate
-import { fetchNews } from './features/news/NewsSlice';
+import { fetchNews } from './Features/news/NewsSlice';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

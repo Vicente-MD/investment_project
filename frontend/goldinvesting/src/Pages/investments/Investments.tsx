@@ -1,6 +1,6 @@
 import { Card, CardContent, Container, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { DataResponse, Quote, fetchData } from '../../services/StockService';
+import { DataResponse, Quote, fetchData } from '../../Services/StockService';
 const App: React.FC = () => {
   const [data, setData] = useState<DataResponse | null>(null);
   const [error, setError] = useState<string | null>(null);

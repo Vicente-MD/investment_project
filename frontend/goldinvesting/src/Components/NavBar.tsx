@@ -12,8 +12,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useDispatch } from 'react-redux';
-import { logoutUser } from '../features/user/userSlice'; // Updated import
-import Logo from '../shared/images/logo.png';
+import { logoutUser } from '../Features/user/userSlice'; // Updated import
+import Logo from '../Shared/images/logo.png';
 import { AppDispatch } from '../store/store'; // Ensure correct import
 import { BarChartOutlined } from '@mui/icons-material';
 

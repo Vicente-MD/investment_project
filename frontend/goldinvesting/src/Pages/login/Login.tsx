@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
-import { authenticateUser } from '../../features/user/userSlice'; // Updated import
+import { authenticateUser } from '../../Features/user/userSlice'; // Updated import
 import {
   TextField, Container, Typography, Box, Grid, Paper, styled, Link, AppBar, Toolbar, CircularProgress, IconButton, InputAdornment
 } from '@mui/material';
@@ -11,11 +11,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import imagem1 from "../../shared/images/Carteira.png";
+import imagem1 from "../../Shared/images/Carteira.png";
 import CustomColorButton from '../../Components/CustomColorButton';
 import "./login.css";
-import Logo from '../../shared/images/logo.png';
-import LocalStorageService from '../../app/service/localStorageService';
+import Logo from '../../Shared/images/logo.png';
 
 const Login: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

@@ -8,9 +8,9 @@ import { styled } from '@mui/material/styles';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
-import { fetchAccordionItemsData } from '../../features/Investments/InvestmentsSlice';
+import { fetchAccordionItemsData } from '../../Features/Investments/InvestmentsSlice';
 import NewsCarousel from '../../Components/NewsCarousel';
-import { fetchAccordionItems } from '../../services/api';
+import { fetchAccordionItems } from '../../Services/api';
 import { toast } from 'react-toastify';
 
 const Home = () => {

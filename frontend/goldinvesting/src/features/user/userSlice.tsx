@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import UsuarioService from '../../app/service/usuarioService';
 
-interface UserState {
+export interface UserState {
   user: any | null;
   error: string | null;
   isAuthenticated: boolean;

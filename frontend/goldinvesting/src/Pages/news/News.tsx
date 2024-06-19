@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
-import { fetchNews } from '../../features/news/NewsSlice';
+import { fetchNews } from '../../Features/news/NewsSlice';
 import { Container, Typography, Link, Box, Card, CardMedia, CardContent, CircularProgress } from "@mui/material";
 
 function News() {
