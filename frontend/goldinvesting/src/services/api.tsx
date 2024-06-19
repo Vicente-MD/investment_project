@@ -16,14 +16,14 @@ export const fetchInvestments = async () => {
   return mockData;
 };
 
-export const fetchAccordionItems = async () => {
-  const response = await axios.get(`${API_BASE_URL}/my-investments/all/1`);
+export const fetchAccordionItems = async (userId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/my-investments/all/${userId}`);
   console.log(response.data);
   return response.data;
 };
 
-export const fetchInvestmentHistory = async () => {
-  const response = await axios.get(`${API_BASE_URL}/my-investments/all/1`);
+export const fetchInvestmentHistory = async (userId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/my-investments/all/${userId}`);
   return response.data;
 };
 
@@ -37,17 +37,17 @@ export const fetchStocksSymbols = async (input: string) => {
   return response.data;
 };
 
-export const createStock = async (data: any) => {
-  const response = await axios.post(`${API_BASE_URL}/stocks/1`, data);
+export const createStock = async (userId: string, data: any) => {
+  const response = await axios.post(`${API_BASE_URL}/stocks/${userId}`, data);
   return response.data;
 };
 
-export const createFixedIncome = async (data: any) => {
-  const response = await axios.post(`${API_BASE_URL}/fixed-incomes/1`, data);
+export const createFixedIncome = async (userId: string, data: any) => {
+  const response = await axios.post(`${API_BASE_URL}/fixed-incomes/${userId}`, data);
   return response.data;
 };
 
-export const createCheckingAccount = async (data: any) => {
-  const response = await axios.post(`${API_BASE_URL}/checking-accounts/1`, data);
+export const createCheckingAccount = async (userId: string, data: any) => {
+  const response = await axios.post(`${API_BASE_URL}/checking-accounts/${userId}`, data);
   return response.data;
 };

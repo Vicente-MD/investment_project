@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { createCheckingAccount, createFixedIncome, createStock, fetchBrokers, fetchStocksSymbols } from '../services/api';
 import AsyncAutoComplete from './AsyncAutoComplete';
 import BasicDatePicker from './DateTimePickerViewRenderers';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 interface CustomModalProps {
   open: boolean;
@@ -17,7 +19,8 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
       secondary: purple,
     },
   });
-
+  const user = useSelector((state: RootState) => state.user.user.data);
+  console.log(user)
   const [selectedLayout, setSelectedLayout] = useState<string>('Renda Fixa');
 
   type LayoutType = 'rendaFixa' | 'acoes' | 'contaCorrente';
@@ -93,15 +96,15 @@ const CustomModal: React.FC<CustomModalProps> = ({ open, onClose }) => {
   const handleSubmit = (layout: string) => {
     switch (layout) {
       case 'rendaFixa':
-        createFixedIncome(formData.rendaFixa);
+        createFixedIncome(user.id, formData.rendaFixa);
         break;
 
       case 'acoes':
-        createStock(formData.acoes);
+        createStock(user.id, formData.acoes);
         break;
 
       case 'contaCorrente':
-        createCheckingAccount(formData.contaCorrente);
+        createCheckingAccount(user.id, formData.contaCorrente);
         break;
 
       default:

@@ -2,11 +2,9 @@ package br.com.goldinvesting.application.services;
 
 import br.com.goldinvesting.application.dto.CheckingAccountDTO;
 import br.com.goldinvesting.application.dto.converter.CheckingAccountConverter;
-import br.com.goldinvesting.application.dto.converter.CheckingAccountConverter;
 import br.com.goldinvesting.application.ports.in.CheckingAccountUseCase;
 import br.com.goldinvesting.application.ports.out.BrokerRepository;
 import br.com.goldinvesting.application.ports.out.CheckingAccountRepository;
-import br.com.goldinvesting.application.ports.out.CheckingAccountSymbolRepository;
 import br.com.goldinvesting.application.ports.out.TransactionRepository;
 import br.com.goldinvesting.application.ports.out.UserRepository;
 import br.com.goldinvesting.domain.model.*;

@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { createStore } from 'redux';
 import Login from '../Pages/login/Login';
 import rootReducer from '../store/rootReducer';
-import LocalStorageService from '../app/services/localStorageService';
+import LocalStorageService from '../app/service/localStorageService';
 
 jest.mock('../app/services/localStorageService');
 

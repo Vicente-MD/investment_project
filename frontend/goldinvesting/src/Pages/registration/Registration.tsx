@@ -13,6 +13,10 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CustomColorButton from '../../Components/CustomColorButton';
 import ErrosValidacaoException from '../../app/service/errosValidacao';
 import UsuarioService from '../../app/service/usuarioService';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Usuario {
   name: string;
@@ -23,33 +27,34 @@ interface Usuario {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-
   const [usuario, setUsuario] = React.useState<Usuario>({
     name: '',
     email: '',
     password: '',
   });
+  const [loading, setLoading] = React.useState(false);
   const usuarioService = new UsuarioService();
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
 
     try {
-      usuarioService.validar(usuario); // Validate user data before sending
-
-      const response = await usuarioService.cadastrarUsuario(usuario);
-      console.log('User registered successfully:', response);
-      // Handle successful registration (e.g., redirect to login page)
+      usuarioService.validar(usuario);
+      await usuarioService.cadastrarUsuario(usuario);
+      toast.success('Usuário cadastrado com sucesso!');
+      setTimeout(() => navigate('/home'), 2500);
     } catch (error) {
       if (error instanceof ErrosValidacaoException) {
-        console.error('Validation errors:', error);
-        // Display validation errors to the user
+        error.errors.forEach((err: string) => toast.error(err));
       } else {
-        console.error('Error registering user:', error);
-        // Handle other errors
+        toast.error('Erro ao cadastrar usuário. Tente novamente mais tarde.');
       }
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
     color: theme.palette.getContrastText(yellow[500]),
@@ -61,6 +66,7 @@ export default function SignUp() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <ToastContainer />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -75,18 +81,18 @@ export default function SignUp() {
             <AccountCircleIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Account
+            Criar conta
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="name"
                   required
                   fullWidth
-                  id="firstName"
-                  label="First Name"
+                  id="name"
+                  label="Nome"
                   autoFocus
                   onChange={(e) => setUsuario({ ...usuario, name: e.target.value })}
                 />
@@ -96,7 +102,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Email"
                   name="email"
                   autoComplete="email"
                   onChange={(e) => setUsuario({ ...usuario, email: e.target.value })}
@@ -105,7 +111,7 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <TextField
                   name="password"
-                  label="Password"
+                  label="Senha"
                   type="password"
                   id="password"
                   autoComplete="new-password"
@@ -117,7 +123,7 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <TextField
                   name="confirmPassword"
-                  label="Confirm Password"
+                  label="Confirme a senha"
                   type="password"
                   id="confirmPassword"
                   autoComplete="new-password"
@@ -130,8 +136,9 @@ export default function SignUp() {
             <CustomColorButton
               sx={{ mt: 3, mb: 2 }}
               type="submit"
+              disabled={loading}
             >
-              Sign Up
+              {loading ? <CircularProgress size={24} /> : 'Criar conta'}
             </CustomColorButton>
           </Box>
         </Box>

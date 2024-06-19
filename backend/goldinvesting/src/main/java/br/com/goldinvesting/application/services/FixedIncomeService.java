@@ -5,7 +5,6 @@ import br.com.goldinvesting.application.dto.FixedIncomeDTO;
 import br.com.goldinvesting.application.dto.converter.FixedIncomeConverter;
 import br.com.goldinvesting.application.ports.out.BrokerRepository;
 import br.com.goldinvesting.application.ports.out.FixedIncomeRepository;
-import br.com.goldinvesting.application.ports.out.FixedIncomeSymbolRepository;
 import br.com.goldinvesting.application.ports.out.TransactionRepository;
 import br.com.goldinvesting.application.ports.out.UserRepository;
 import br.com.goldinvesting.domain.model.Broker;

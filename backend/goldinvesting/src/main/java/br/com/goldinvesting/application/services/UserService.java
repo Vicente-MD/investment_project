@@ -21,14 +21,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService implements UserUseCase {
     private final UserRepository userRepository;
-    private final WalletRepository walletRepository;
 
     @Transactional
     @Override
     public UserDTO createUser(UserDTO userDTO) {
         User user = UserConverter.toEntity(userDTO);
-        Wallet wallet = new Wallet(user.getWallet().getId(), user, user.getWallet().getBalance());
-        user.setWallet(walletRepository.save(wallet));
         User savedUser = userRepository.save(user);
         return UserConverter.toDTO(savedUser);
     }

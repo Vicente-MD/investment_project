@@ -13,8 +13,7 @@ public class UserConverter {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getPassword(),
-                WalletConverter.toDTO(user.getWallet())
+                user.getPassword()
         );
     }
 
@@ -26,8 +25,7 @@ public class UserConverter {
                 userDTO.getId(),
                 userDTO.getName(),
                 userDTO.getEmail(),
-                userDTO.getPassword(),
-                WalletConverter.toEntity(userDTO.getWallet())
+                userDTO.getPassword()
         );
     }
 }

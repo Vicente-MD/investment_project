@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchInvestments, fetchAccordionItems } from '../../services/api';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 interface Investment {
   id: number;
@@ -39,8 +41,8 @@ export const fetchInvestmentData = createAsyncThunk(
 
 export const fetchAccordionItemsData = createAsyncThunk(
   'investments/fetchAccordionItemsData',
-  async () => {
-    const accordionItems = await fetchAccordionItems();
+  async (userId: string) => {
+    const accordionItems = await fetchAccordionItems(userId);
     return accordionItems;
   }
 );

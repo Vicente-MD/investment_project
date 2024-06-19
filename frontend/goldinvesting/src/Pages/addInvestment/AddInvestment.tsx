@@ -19,10 +19,11 @@ const theme = createTheme({
 const AddInvestment: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { data, accordionItems, status, error } = useSelector((state: RootState) => state.investments);
+  const user = useSelector((state: RootState) => state.user.user.data);
 
   useEffect(() => {
     dispatch(fetchInvestmentData());
-    dispatch(fetchAccordionItemsData());
+    dispatch(fetchAccordionItemsData(user.id));
   }, [dispatch]);
   
   const [open, setOpen] = React.useState(false);
