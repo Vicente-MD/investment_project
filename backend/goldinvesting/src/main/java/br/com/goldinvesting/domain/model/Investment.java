@@ -17,16 +17,27 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Abstract class representing a generic investment.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Investment {
+
+    /**
+     * Unique identifier for the investment.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The type of investment.
+     * This field is mandatory and should not be null.
+     */
     @Enumerated(EnumType.STRING)
     @NotNull
     private InvestmentType investmentType;

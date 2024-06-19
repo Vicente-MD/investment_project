@@ -1,4 +1,4 @@
-package br.com.goldinvesting.application;
+package br.com.goldinvesting.application.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;

@@ -11,6 +11,5 @@ public class TransactionDTO {
     private Long id;
     private FeignInvestmentDTO investment;
     private InvestmentTypeDTO investmentType;
-    private WalletDTO wallet;
     private StatusDTO status;
 }

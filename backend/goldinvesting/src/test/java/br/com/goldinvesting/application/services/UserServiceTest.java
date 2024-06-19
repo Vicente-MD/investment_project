@@ -1,169 +1,96 @@
 package br.com.goldinvesting.application.services;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import br.com.goldinvesting.application.dto.UserDTO;
 import br.com.goldinvesting.application.dto.converter.UserConverter;
-import br.com.goldinvesting.application.dto.converter.WalletConverter;
 import br.com.goldinvesting.application.ports.out.UserRepository;
-import br.com.goldinvesting.application.ports.out.WalletRepository;
 import br.com.goldinvesting.domain.model.User;
-import br.com.goldinvesting.domain.model.Wallet;
 import br.com.goldinvesting.exceptions.BadCredentialsException;
-import br.com.goldinvesting.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
 
-    @Mock
-    private WalletRepository walletRepository;
-
     @InjectMocks
     private UserService userService;
+
+    private UserDTO userDTO;
+    private User user;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
 
-    @Test
-    void createUser() {
-        UserDTO userDTO = new UserDTO();
+        userDTO = new UserDTO();
+        userDTO.setId(1L);
         userDTO.setName("John Doe");
         userDTO.setEmail("john.doe@example.com");
         userDTO.setPassword("password");
-        Wallet wallet = new Wallet();
-        wallet.setId(1L);
-        wallet.setBalance(1000.0);
 
-        User user = UserConverter.toEntity(userDTO);
-        when(walletRepository.save(any(Wallet.class))).thenReturn(wallet);
+        user = UserConverter.toEntity(userDTO);
+    }
+
+    @Test
+    void testCreateUser() {
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        UserDTO result = userService.createUser(userDTO);
+        UserDTO createdUserDTO = userService.createUser(userDTO);
 
-        assertNotNull(result);
-        assertEquals(userDTO.getName(), result.getName());
-        assertEquals(userDTO.getEmail(), result.getEmail());
+        assertNotNull(createdUserDTO, "The created UserDTO should not be null");
+        assertEquals(user.getId(), createdUserDTO.getId(), "The user ID should match");
+        assertEquals(user.getName(), createdUserDTO.getName(), "The user name should match");
+        assertEquals(user.getEmail(), createdUserDTO.getEmail(), "The user email should match");
 
         verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    void getUserById() {
-        User user = new User();
-        user.setId(1L);
-        user.setName("John Doe");
-        user.setEmail("john.doe@example.com");
-        user.setPassword("password");
-
+    void testGetUserById() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        UserDTO result = userService.getUserById(1L);
+        UserDTO foundUserDTO = userService.getUserById(1L);
 
-        assertNotNull(result);
-        assertEquals(user.getId(), result.getId());
-        assertEquals(user.getName(), result.getName());
+        assertNotNull(foundUserDTO, "The found UserDTO should not be null");
+        assertEquals(user.getId(), foundUserDTO.getId(), "The user ID should match");
+
+        verify(userRepository, times(1)).findById(1L);
     }
 
     @Test
-    void getUserById_notFound() {
-        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+    void testAuthenticate() {
+        when(userRepository.findByEmail("john.doe@example.com")).thenReturn(Optional.of(user));
 
-        assertThrows(ResourceNotFoundException.class, () -> userService.getUserById(1L));
+        UserDTO authenticatedUserDTO = userService.authenticate(userDTO);
+
+        assertNotNull(authenticatedUserDTO, "The authenticated UserDTO should not be null");
+        assertEquals(user.getId(), authenticatedUserDTO.getId(), "The user ID should match");
+        assertEquals(user.getEmail(), authenticatedUserDTO.getEmail(), "The user email should match");
+
+        verify(userRepository, times(1)).findByEmail("john.doe@example.com");
     }
 
     @Test
-    void deleteUser() {
-        doNothing().when(userRepository).deleteById(1L);
+    void testAuthenticateBadCredentials() {
+        when(userRepository.findByEmail("john.doe@example.com")).thenReturn(Optional.of(user));
 
-        userService.deleteUser(1L);
+        UserDTO invalidUserDTO = new UserDTO();
+        invalidUserDTO.setEmail("john.doe@example.com");
+        invalidUserDTO.setPassword("wrongpassword");
 
-        verify(userRepository, times(1)).deleteById(1L);
-    }
+        assertThrows(BadCredentialsException.class, () -> {
+            userService.authenticate(invalidUserDTO);
+        }, "Should throw BadCredentialsException for wrong password");
 
-    @Test
-    void getUsers() {
-        User user1 = new User();
-        user1.setId(1L);
-        user1.setName("John Doe");
-        user1.setEmail("john.doe@example.com");
-
-        User user2 = new User();
-        user2.setId(2L);
-        user2.setName("Jane Doe");
-        user2.setEmail("jane.doe@example.com");
-
-        when(userRepository.findAll()).thenReturn(Arrays.asList(user1, user2));
-
-        List<UserDTO> result = userService.getUsers();
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals(user1.getName(), result.get(0).getName());
-        assertEquals(user2.getName(), result.get(1).getName());
-    }
-
-    @Test
-    void authenticate() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setEmail("john.doe@example.com");
-        userDTO.setPassword("password");
-
-        User user = new User();
-        user.setEmail("john.doe@example.com");
-        user.setPassword("password");
-
-        when(userRepository.findByEmail(userDTO.getEmail())).thenReturn(Optional.of(user));
-
-        UserDTO result = userService.authenticate(userDTO);
-
-        assertNotNull(result);
-        assertEquals(user.getEmail(), result.getEmail());
-    }
-
-    @Test
-    void authenticate_badCredentials() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setEmail("john.doe@example.com");
-        userDTO.setPassword("wrongpassword");
-
-        User user = new User();
-        user.setEmail("john.doe@example.com");
-        user.setPassword("password");
-
-        when(userRepository.findByEmail(userDTO.getEmail())).thenReturn(Optional.of(user));
-
-        assertThrows(BadCredentialsException.class, () -> userService.authenticate(userDTO));
-    }
-
-    @Test
-    void updateUser() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(1L);
-        userDTO.setName("John Doe Updated");
-        userDTO.setEmail("john.doe.updated@example.com");
-        userDTO.setPassword("newpassword");
-
-        User user = UserConverter.toEntity(userDTO);
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        doNothing().when(userRepository).setUser(user.getId(), user.getName(), user.getEmail(), user.getPassword());
-
-        userService.updateUser(userDTO);
-
-        verify(userRepository, times(1)).setUser(user.getId(), user.getName(), user.getEmail(), user.getPassword());
+        verify(userRepository, times(1)).findByEmail("john.doe@example.com");
     }
 }

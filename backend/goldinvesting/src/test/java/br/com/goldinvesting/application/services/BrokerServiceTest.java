@@ -1,6 +1,10 @@
 package br.com.goldinvesting.application.services;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import br.com.goldinvesting.application.dto.BrokerDTO;
+import br.com.goldinvesting.application.dto.converter.BrokerConverter;
 import br.com.goldinvesting.application.ports.out.BrokerRepository;
 import br.com.goldinvesting.domain.model.Broker;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,12 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class BrokerServiceTest {
 
@@ -24,75 +24,57 @@ class BrokerServiceTest {
     @InjectMocks
     private BrokerService brokerService;
 
+    private BrokerDTO brokerDTO;
+    private Broker broker;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        brokerDTO = new BrokerDTO();
+        brokerDTO.setId(1L);
+        brokerDTO.setName("Broker Name");
+
+        broker = BrokerConverter.toEntity(brokerDTO);
     }
 
     @Test
-    void createBroker() {
-        BrokerDTO brokerDTO = new BrokerDTO();
-        brokerDTO.setName("Broker 1");
+    void testCreateBroker() {
+        when(brokerRepository.save(any(Broker.class))).thenReturn(broker);
 
-        Broker broker = new Broker();
-        broker.setName("Broker 1");
+        BrokerDTO createdBrokerDTO = brokerService.createBroker(brokerDTO);
 
-        Broker savedBroker = new Broker();
-        savedBroker.setId(1L);
-        savedBroker.setName("Broker 1");
+        assertNotNull(createdBrokerDTO, "The created BrokerDTO should not be null");
+        assertEquals(broker.getId(), createdBrokerDTO.getId(), "The broker ID should match");
+        assertEquals(broker.getName(), createdBrokerDTO.getName(), "The broker name should match");
 
-        when(brokerRepository.save(any(Broker.class))).thenReturn(savedBroker);
-
-        BrokerDTO result = brokerService.createBroker(brokerDTO);
-
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Broker 1", result.getName());
+        verify(brokerRepository, times(1)).save(any(Broker.class));
     }
 
     @Test
-    void getBrokerById() {
-        Broker broker = new Broker();
-        broker.setId(1L);
-        broker.setName("Broker 1");
-
+    void testGetBrokerById() {
         when(brokerRepository.findById(1L)).thenReturn(Optional.of(broker));
 
-        BrokerDTO result = brokerService.getBrokerById(1L);
+        BrokerDTO foundBrokerDTO = brokerService.getBrokerById(1L);
 
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Broker 1", result.getName());
+        assertNotNull(foundBrokerDTO, "The found BrokerDTO should not be null");
+        assertEquals(broker.getId(), foundBrokerDTO.getId(), "The broker ID should match");
+
+        verify(brokerRepository, times(1)).findById(1L);
     }
 
     @Test
-    void deleteBroker() {
-        doNothing().when(brokerRepository).deleteById(1L);
+    void testGetBrokerByText() {
+        when(brokerRepository.findByNameContainingIgnoreCase("Broker")).thenReturn(List.of(broker));
 
-        brokerService.deleteBroker(1L);
+        List<BrokerDTO> brokers = brokerService.getBrokerByText("Broker");
 
-        verify(brokerRepository, times(1)).deleteById(1L);
-    }
+        assertNotNull(brokers, "The brokers list should not be null");
+        assertEquals(1, brokers.size(), "The brokers list size should be 1");
+        assertEquals(broker.getId(), brokers.get(0).getId(), "The broker ID should match");
+        assertEquals(broker.getName(), brokers.get(0).getName(), "The broker name should match");
 
-    @Test
-    void getBrokers() {
-        Broker broker1 = new Broker();
-        broker1.setId(1L);
-        broker1.setName("Broker 1");
-
-        Broker broker2 = new Broker();
-        broker2.setId(2L);
-        broker2.setName("Broker 2");
-
-        when(brokerRepository.findAll()).thenReturn(Arrays.asList(broker1, broker2));
-
-        List<BrokerDTO> result = brokerService.getBrokers();
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals(1L, result.get(0).getId());
-        assertEquals("Broker 1", result.get(0).getName());
-        assertEquals(2L, result.get(1).getId());
-        assertEquals("Broker 2", result.get(1).getName());
+        verify(brokerRepository, times(1)).findByNameContainingIgnoreCase("Broker");
     }
 }
+

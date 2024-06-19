@@ -1,11 +1,41 @@
 package br.com.goldinvesting.domain.model;
 
+/**
+ * Enumeration representing the status of an investment.
+ */
 public enum Status {
-    ACTIVE,         // Ativo atualmente negociado
-    INACTIVE,       // Ativo não mais negociado
-    PENDING,        // Ativo aguardando alguma condição para ser ativo
-    SOLD,           // Ativo que foi vendido
-    PURCHASED,      // Ativo que foi comprado mas não está mais na carteira
-    UNDER_REVIEW,    // Ativo que está sendo analisado
-    CONCLUDED,      // Ativo que foi concluído
+    /**
+     * The investment is currently active and being traded.
+     */
+    ACTIVE,
+
+    /**
+     * The investment is no longer being traded.
+     */
+    INACTIVE,
+
+    /**
+     * The investment is pending and awaiting some condition to become active.
+     */
+    PENDING,
+
+    /**
+     * The investment has been sold.
+     */
+    SOLD,
+
+    /**
+     * The investment has been purchased but is no longer in the portfolio.
+     */
+    PURCHASED,
+
+    /**
+     * The investment is currently under review.
+     */
+    UNDER_REVIEW,
+
+    /**
+     * The investment has been concluded.
+     */
+    CONCLUDED,
 }
