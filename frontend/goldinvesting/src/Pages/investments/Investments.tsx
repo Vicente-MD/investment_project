@@ -22,7 +22,7 @@ const App: React.FC = () => {
   return (
     <Container>
       <Typography variant="h2" gutterBottom>
-        Stock Quotes
+        Mercado de ações
       </Typography>
       {error && <Typography color="error">{error}</Typography>}
       {data ? (

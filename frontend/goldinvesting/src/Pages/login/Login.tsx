@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import imagem1 from "../../shared/images/Carteira.png";
 import CustomColorButton from '../../Components/CustomColorButton';
 import "./login.css";
+import Logo from '../../shared/images/logo.png';
 
 const Login: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -62,7 +63,17 @@ const Login: React.FC = () => {
           <Grid item xs={12} md={12}>
             <AppBar sx={{ bgcolor: 'black' }}>
               <Toolbar>
-                <Item>Gold Investing(mudar)</Item>
+                <Box>
+                  <img
+                    src={Logo}
+                    alt="logo"
+                    style={{
+                      backgroundColor: 'black', 
+                      maxWidth: '130px',
+                      height: 'auto',
+                    }}
+                  />
+                </Box>
               </Toolbar>
             </AppBar>
           </Grid>

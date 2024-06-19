@@ -11,9 +11,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { PieChart } from '@mui/x-charts/PieChart';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { translateType } from '../utils/utils';
 
 interface AccordionItem {
   year: string | number;
@@ -37,13 +38,11 @@ const AccordionComponent: React.FC<AccordionComponentProps> = ({ items }) => {
     return acc;
   }, {} as Record<string, AccordionItem[]>);
 
-  console.log(itemsByType)
-
   return (
     <div>
       {Object.entries(itemsByType).map(([type, items], index) => {
-        // Transform the rows into the format expected by PieChart
-        const pieData = items.map(item => ({ label: `${item.year}-${item.month}`, value: item.price }));
+        const lineData = items.map(item => ({ date: `${item.month}/${item.year}`, price: item.price }));
+
         return (
           <Accordion key={type}>
             <AccordionSummary
@@ -51,19 +50,19 @@ const AccordionComponent: React.FC<AccordionComponentProps> = ({ items }) => {
               aria-controls={`panel${index}-content`}
               id={`panel${index}-header`}
             >
-              <Typography>{type}</Typography>
+              <Typography>{translateType(type)}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <PieChart
-                series={[
-                  {
-                    data: pieData,
-                    highlightScope: { faded: 'global', highlighted: 'item' },
-                    faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
-                  },
-                ]}
-                height={200}
-              />
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={lineData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="price" name="Preço" stroke="#8884d8" />
+                </LineChart>
+              </ResponsiveContainer>
               <TableContainer component={Paper}>
                 <Table>
                   <TableHead>

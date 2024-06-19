@@ -13,6 +13,7 @@ import { useState } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useDispatch } from 'react-redux';
 import { logout } from '../features/auth/AuthSlice';
+import Logo from '../shared/images/logo.png';
 
 const drawerWidth = 240;
 
@@ -68,7 +69,7 @@ const Navbar: React.FC = () => {
 
   const drawer = (
     <>
-      <Toolbar />
+      {/* <Toolbar /> */}
       <List>
         {[
           { text: 'Home', icon: <HomeIcon />, link: '/home' },
@@ -83,7 +84,7 @@ const Navbar: React.FC = () => {
           </ListItemButton>
         ))}
       </List>
-      <Divider sx={{ backgroundColor: '#fff' }}/>
+      <Divider sx={{ backgroundColor: '#fff' }} />
       <List>
         {[
           { text: 'Minha Conta', icon: <AccountCircleIcon />, link: '/account' },
@@ -131,6 +132,17 @@ const Navbar: React.FC = () => {
           variant="permanent"
           sx={StyledDrawer}
         >
+          <img
+              src={Logo}
+              alt="logo"
+              style={{
+                backgroundColor: 'black',
+                maxWidth: '200px',
+                height: 'auto',
+                alignSelf: 'center',
+                marginTop: '30px',
+              }}
+            />
           {drawer}
         </Drawer>
       )}

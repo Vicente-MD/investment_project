@@ -1,6 +1,5 @@
-// src/Pages/addInvestment/AddInvestment.tsx
 import React, { useEffect } from 'react';
-import { Button, Container, Grid, Paper, Stack } from '@mui/material';
+import { Button, Container, Grid, Paper, Stack, CircularProgress } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
 import CustomAccordion from '../../Components/AccordionComponent';
 import { yellow } from '@mui/material/colors';
@@ -24,22 +23,33 @@ const AddInvestment: React.FC = () => {
   useEffect(() => {
     dispatch(fetchInvestmentData());
     dispatch(fetchAccordionItemsData(user.id));
-  }, [dispatch]);
-  
+  }, [dispatch, user.id]);
+
   const [open, setOpen] = React.useState(false);
+
   const handleOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
+    dispatch(fetchAccordionItemsData(user.id)); // Recarregar accordionItems ao fechar o modal
   };
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return (
+      <Container>
+        <CircularProgress />
+      </Container>
+    );
   }
 
   if (status === 'failed') {
-    return <div>Error: {error}</div>;
+    return (
+      <Container>
+        <div>Error: {error}</div>
+      </Container>
+    );
   }
 
   return (

@@ -9,8 +9,7 @@ export const fetchInvestments = async () => {
   const mockData = [
     { id: 0, value: 10, label: 'Renda Fixa' },
     { id: 1, value: 15, label: 'Ações' },
-    { id: 2, value: 20, label: 'Tesouro Direto' },
-    { id: 3, value: 45, label: 'Conta Corrente' },
+    { id: 2, value: 45, label: 'Conta Corrente' },
   ];
 
   return mockData;
@@ -18,7 +17,6 @@ export const fetchInvestments = async () => {
 
 export const fetchAccordionItems = async (userId: string) => {
   const response = await axios.get(`${API_BASE_URL}/my-investments/all/${userId}`);
-  console.log(response.data);
   return response.data;
 };
 
