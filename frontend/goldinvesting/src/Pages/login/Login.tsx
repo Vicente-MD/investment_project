@@ -1,8 +1,9 @@
+// Login.tsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
-import { authenticateUser } from '../../features/actions/userActions';
+import { authenticateUser } from '../../features/user/userSlice'; // Updated import
 import {
   TextField, Container, Typography, Box, Grid, Paper, styled, Link, AppBar, Toolbar, CircularProgress, IconButton, InputAdornment
 } from '@mui/material';

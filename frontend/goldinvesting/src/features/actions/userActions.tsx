@@ -5,12 +5,14 @@ export const AUTHENTICATE_USER = 'AUTHENTICATE_USER';
 export const REGISTER_USER = 'REGISTER_USER';
 export const UPDATE_USER = 'UPDATE_USER';
 export const USER_ERROR = 'USER_ERROR';
+export const LOGOUT_USER = 'LOGOUT_USER';
 
 enum UserActionTypes {
   AUTHENTICATE_USER = 'AUTHENTICATE_USER',
   REGISTER_USER = 'REGISTER_USER',
   UPDATE_USER = 'UPDATE_USER',
-  USER_ERROR = 'USER_ERROR'
+  USER_ERROR = 'USER_ERROR',
+  LOGOUT_USER = 'LOGOUT_USER',
 }
 
 interface Credenciais {
@@ -44,7 +46,16 @@ interface UserErrorAction {
   payload: string;
 }
 
-type UserActions = AuthenticateUserAction | RegisterUserAction | UpdateUserAction | UserErrorAction;
+interface LogoutUserAction {
+  type: UserActionTypes.LOGOUT_USER ;
+}
+
+type UserActions = 
+  | AuthenticateUserAction 
+  | RegisterUserAction 
+  | UpdateUserAction 
+  | UserErrorAction 
+  | LogoutUserAction;
 
 const usuarioService = new UsuarioService();
 
@@ -79,3 +90,7 @@ export const updateUser = (usuario: Usuario) => async (dispatch: Dispatch<UserAc
     dispatch({ type: UserActionTypes.USER_ERROR, payload: errorMessage });
   }
 };
+
+export const logoutUser = (): LogoutUserAction => ({
+  type: UserActionTypes.LOGOUT_USER,
+});
