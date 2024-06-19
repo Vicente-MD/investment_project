@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import {
-  AppBar, Toolbar, Typography, Grid, Card, CardContent, CardMedia, Box, Container,
-  Paper,
-  CardActions,
-  Button
+  AppBar, Toolbar, Typography, Grid, Card, CardContent, Paper,
+  CardActions, Button, Container,
+  CircularProgress
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Chart from '../../Components/Chart';
-import NewsCarousel from '../../Components/NewsCarousel';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
+import { fetchAccordionItemsData } from '../../features/Investments/InvestmentsSlice';
+import NewsCarousel from '../../Components/NewsCarousel';
 
 const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data, accordionItems, status, error } = useSelector((state: RootState) => state.investments);
+  const { transformedData, status, error } = useSelector((state: RootState) => state.investments);
+  const user = useSelector((state: RootState) => state.user.user.data);
+
+  useEffect(() => {
+    dispatch(fetchAccordionItemsData(user.id));
+  }, [dispatch, user.id]);
+
   const [news, setNews] = useState<JSX.Element[]>([
     <div>News 1</div>,
     <div>News 2</div>,
@@ -29,9 +34,21 @@ const Home = () => {
     color: theme.palette.text.secondary,
   }));
 
-  useEffect(() => {
-    // Fetch data or perform any side effects here
-  }, []); // Empty dependency array means this effect runs only once on component mount
+  if (status === 'loading') {
+    return (
+      <Container>
+        <CircularProgress />
+      </Container>
+    );
+  }
+
+  if (status === 'failed') {
+    return (
+      <Container>
+        <div>Error: {error}</div>
+      </Container>
+    );
+  }
 
   return (
     <Container sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', py: 8 }}>
@@ -41,7 +58,7 @@ const Home = () => {
             <PieChart
               series={[
                 {
-                  data,
+                  data: transformedData,
                   highlightScope: { faded: 'global', highlighted: 'item' },
                   faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
                 },
@@ -87,7 +104,7 @@ const Home = () => {
                 <PieChart
                   series={[
                     {
-                      data,
+                      data: transformedData,
                       highlightScope: { faded: 'global', highlighted: 'item' },
                       faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
                     },
