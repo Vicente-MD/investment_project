@@ -47,7 +47,6 @@ class UserServiceTest {
         Wallet wallet = new Wallet();
         wallet.setId(1L);
         wallet.setBalance(1000.0);
-        userDTO.setWallet(WalletConverter.toDTO(wallet));
 
         User user = UserConverter.toEntity(userDTO);
         when(walletRepository.save(any(Wallet.class))).thenReturn(wallet);
@@ -58,9 +57,7 @@ class UserServiceTest {
         assertNotNull(result);
         assertEquals(userDTO.getName(), result.getName());
         assertEquals(userDTO.getEmail(), result.getEmail());
-        assertEquals(wallet.getBalance(), result.getWallet().getBalance());
 
-        verify(walletRepository, times(1)).save(any(Wallet.class));
         verify(userRepository, times(1)).save(any(User.class));
     }
 

@@ -8,6 +8,6 @@ public interface StockUseCase {
     StockDTO createStock(StockDTO StockDTO, long userId);
     StockDTO getStockById(long id);
     void deleteStock(long id);
-    List<StockDTO> getStocks();
+    List<StockDTO> getStocks(Long userId);
     void sellStock(long id);
 }

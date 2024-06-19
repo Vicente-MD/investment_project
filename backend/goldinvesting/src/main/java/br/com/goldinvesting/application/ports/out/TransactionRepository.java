@@ -14,4 +14,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     void setStatus(Long id, Long status_id);
 
     List<Transaction> findByUserId(Long userId);
+
+    List<Transaction> findByInvestmentId(Long investmentId);
 }

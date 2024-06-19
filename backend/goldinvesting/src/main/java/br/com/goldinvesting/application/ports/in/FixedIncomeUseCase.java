@@ -8,5 +8,5 @@ public interface FixedIncomeUseCase {
     FixedIncomeDTO createFixedIncome(FixedIncomeDTO FixedIncomeDTO, long userId);
     FixedIncomeDTO getFixedIncomeById(long id);
     void deleteFixedIncome(long id);
-    List<FixedIncomeDTO> getFixedIncomes();
+    List<FixedIncomeDTO> getFixedIncomes(long userId);
 }

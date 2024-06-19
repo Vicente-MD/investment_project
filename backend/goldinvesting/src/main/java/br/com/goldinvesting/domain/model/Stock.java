@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 // ação
 
 @Data
@@ -20,10 +22,12 @@ import java.time.LocalDate;
 public class Stock extends Investment  {
     @ManyToOne
     @NotNull
+    @JsonIgnore
     private StockSymbol stockSymbol;
 
     @ManyToOne
     @NotNull
+    @JsonIgnore
     private Broker broker;
 
     @DecimalMin(value = "0.0", inclusive = false)

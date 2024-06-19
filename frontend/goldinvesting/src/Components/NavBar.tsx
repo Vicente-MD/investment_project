@@ -14,6 +14,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useDispatch } from 'react-redux';
 import { logout } from '../features/auth/AuthSlice';
 import Logo from '../shared/images/logo.png';
+import { BarChartOutlined } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -75,7 +76,7 @@ const Navbar: React.FC = () => {
           { text: 'Home', icon: <HomeIcon />, link: '/home' },
           { text: 'Notícias', icon: <NewspaperIcon />, link: '/news' },
           { text: 'Meus Investimentos', icon: <AccountBalanceWalletIcon />, link: '/addinvestments' },
-          { text: 'Mercado de Ações', icon: <AccountBalanceWalletIcon />, link: '/investments' },
+          { text: 'Mercado de Ações', icon: <BarChartOutlined />, link: '/investments' },
           { text: 'Simular', icon: <CalculateIcon />, link: '/simulate' },
         ].map((item) => (
           <ListItemButton sx={StyledListItemButton} key={item.text} component={Link} to={item.link}>

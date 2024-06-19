@@ -9,6 +9,7 @@ import br.com.goldinvesting.application.ports.out.StockSymbolRepository;
 import br.com.goldinvesting.application.ports.out.TransactionRepository;
 import br.com.goldinvesting.application.ports.out.UserRepository;
 import br.com.goldinvesting.domain.model.Broker;
+import br.com.goldinvesting.domain.model.FixedIncome;
 import br.com.goldinvesting.domain.model.InvestmentType;
 import br.com.goldinvesting.domain.model.Status;
 import br.com.goldinvesting.domain.model.Stock;
@@ -17,7 +18,6 @@ import br.com.goldinvesting.domain.model.Transaction;
 import br.com.goldinvesting.domain.model.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,14 +36,16 @@ public class StockService implements StockUseCase {
     @Override
     public StockDTO createStock(StockDTO stockDTO, long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        StockSymbol stockSymbol = stockSymbolRepository.findById(stockDTO.getStockSymbol().getId()).orElseThrow(() -> new IllegalArgumentException("Stock Symbol not found"));
-        Broker broker = brokerRepository.findById(stockDTO.getBroker().getId()).orElseThrow(() -> new IllegalArgumentException("Broker not found"));
+        StockSymbol stockSymbol = stockSymbolRepository.findById(stockDTO.getStockSymbol().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Stock Symbol not found"));
+        Broker broker = brokerRepository.findById(stockDTO.getBroker().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Broker not found"));
 
         Stock stock = StockConverter.toEntity(stockDTO);
         stock.setStockSymbol(stockSymbol);
         stock.setBroker(broker);
         stock.setInvestmentType(InvestmentType.STOCK);
-        
+
         Stock stockSaved = stockRepository.save(stock);
 
         Transaction transaction = new Transaction();
@@ -69,8 +71,12 @@ public class StockService implements StockUseCase {
     }
 
     @Override
-    public List<StockDTO> getStocks() {
-        return stockRepository.findAll().stream()
+    public List<StockDTO> getStocks(Long userId) {
+        return transactionRepository.findByUserId(userId).stream()
+                .filter(t -> t.getStatus().name().equals(Status.ACTIVE.name()))
+                .map(Transaction::getInvestment)
+                .filter(Stock.class::isInstance)
+                .map(Stock.class::cast)
                 .map(StockConverter::toDTO)
                 .collect(Collectors.toList());
     }
@@ -78,7 +84,10 @@ public class StockService implements StockUseCase {
     @Transactional
     @Override
     public void sellStock(long id) {
-        var transaction = transactionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
+        Transaction transaction = transactionRepository.findByInvestmentId(id).stream()
+                .filter(t -> t.getInvestment() instanceof Stock)
+                .collect(Collectors.toList()).get(0);
+
         transaction.setStatus(Status.SOLD);
         transactionRepository.save(transaction);
     }

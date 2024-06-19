@@ -36,16 +36,13 @@ public class CheckingAccountController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<CheckingAccountDTO>> getCheckingAccounts() {
-        List<CheckingAccount> checkingAccounts = checkingAccountUseCase.getCheckingAccounts();
-        List<CheckingAccountDTO> checkingAccountDTOs = checkingAccounts.stream()
-                .map(CheckingAccountConverter::toDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(checkingAccountDTOs);
+    @GetMapping("/all/{userId}")
+    public ResponseEntity<List<CheckingAccountDTO>> getCheckingAccounts(@PathVariable Long userId) {
+        var checkingAccounts = checkingAccountUseCase.getCheckingAccounts(userId);
+        return ResponseEntity.ok(checkingAccounts);
     }
 
-    @PutMapping("/conclude/{id}")
+    @PostMapping("/conclude/{id}")
     public ResponseEntity<Void> concludeCheckingAccount(@PathVariable long id) {
         checkingAccountUseCase.concludeCheckingAccount(id);
         return ResponseEntity.noContent().build();

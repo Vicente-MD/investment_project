@@ -20,9 +20,10 @@ public class StockController {
         return ResponseEntity.ok(stockUseCase.createStock(stockDTO, userId));
     }
 
-    @GetMapping
-    public ResponseEntity<List<StockDTO>> getAllStocks() {
-        return ResponseEntity.ok(stockUseCase.getStocks());
+    @GetMapping("/all/{userId}")
+    public ResponseEntity<List<StockDTO>> getAllStocks(@PathVariable Long userId) {
+        var stocks = stockUseCase.getStocks(userId);
+        return ResponseEntity.ok(stocks);
     }
 
     @GetMapping("/{id}")

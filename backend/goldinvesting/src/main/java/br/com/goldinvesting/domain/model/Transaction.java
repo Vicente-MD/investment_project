@@ -1,5 +1,9 @@
 package br.com.goldinvesting.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,8 +27,9 @@ public class Transaction {
     @NotNull
     private Status status;
 
-    @ManyToOne
+    @OneToOne
     @NotNull
+    @JsonIgnore
     private Investment investment;
 
     public String toString() {

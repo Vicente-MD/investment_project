@@ -49,3 +49,33 @@ export const createCheckingAccount = async (userId: string, data: any) => {
   const response = await axios.post(`${API_BASE_URL}/checking-accounts/${userId}`, data);
   return response.data;
 };
+
+export const fetchStocks = async (userId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/stocks/all/${userId}`);
+  return response.data;
+};
+
+export const fetchFixedIncomes = async (userId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/fixed-incomes/all/${userId}`);
+  return response.data;
+};
+
+export const fetchCheckingAccounts = async (userId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/checking-accounts/all/${userId}`);
+  return response.data;
+};
+
+export const sellStock = async (stockId: string) => {
+  const response = await axios.post(`${API_BASE_URL}/stocks/sell/${stockId}`);
+  return response.data;
+};
+
+export const deleteFixedIncome = async (fixedIncomeId: string) => {
+  const response = await axios.delete(`${API_BASE_URL}/fixed-incomes/${fixedIncomeId}`);
+  return response.data;
+};
+
+export const concludeCheckingAccount = async (checkingAccountId: string) => {
+  const response = await axios.post(`${API_BASE_URL}/checking-accounts/conclude/${checkingAccountId}`);
+  return response.data;
+};

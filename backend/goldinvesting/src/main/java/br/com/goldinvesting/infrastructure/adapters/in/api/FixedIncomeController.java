@@ -1,9 +1,10 @@
 package br.com.goldinvesting.infrastructure.adapters.in.api;
 
-
 import br.com.goldinvesting.application.dto.FixedIncomeDTO;
 import br.com.goldinvesting.application.ports.in.FixedIncomeUseCase;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +17,14 @@ public class FixedIncomeController {
     private final FixedIncomeUseCase fixedIncomeUseCase;
 
     @PostMapping("/{userId}")
-    public ResponseEntity<FixedIncomeDTO> createFixedIncome(@RequestBody FixedIncomeDTO fixedIncomeDTO, @PathVariable Long userId) {
+    public ResponseEntity<FixedIncomeDTO> createFixedIncome(@RequestBody FixedIncomeDTO fixedIncomeDTO,
+            @PathVariable Long userId) {
         return ResponseEntity.ok(fixedIncomeUseCase.createFixedIncome(fixedIncomeDTO, userId));
     }
 
-    @GetMapping
-    public ResponseEntity<List<FixedIncomeDTO>> getAllFixedIncomes() {
-        return ResponseEntity.ok(fixedIncomeUseCase.getFixedIncomes());
+    @GetMapping("/all/{userId}")
+    public ResponseEntity<List<FixedIncomeDTO>> getAllFixedIncomes(@PathVariable Long userId) {
+        return ResponseEntity.ok(fixedIncomeUseCase.getFixedIncomes(userId));
     }
 
     @GetMapping("/{id}")

@@ -9,6 +9,6 @@ public interface CheckingAccountUseCase {
     CheckingAccountDTO createCheckingAccount(CheckingAccountDTO checkingAccountDTO, long userId);
     CheckingAccount getCheckingAccountById(long id);
     void deleteCheckingAccount(long id);
-    List<CheckingAccount> getCheckingAccounts();
+    List<CheckingAccountDTO> getCheckingAccounts(long userId);
     void concludeCheckingAccount(long id);
 }

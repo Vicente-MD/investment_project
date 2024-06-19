@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Container, Grid, Paper, Stack, CircularProgress } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
 import CustomAccordion from '../../Components/AccordionComponent';
@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
 import { fetchInvestmentData, fetchAccordionItemsData } from '../../features/Investments/InvestmentsSlice';
 import CustomModal from '../../Components/CustomModal';
+import { fetchCheckingAccounts, fetchFixedIncomes, fetchStocks } from '../../services/api';
 
 const theme = createTheme({
   palette: {
@@ -18,11 +19,26 @@ const theme = createTheme({
 const AddInvestment: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { data, accordionItems, status, error } = useSelector((state: RootState) => state.investments);
+  const [stocks, setStocks] = useState<any[]>([]);
+  const [fixedIncomes, setFixedIncomes] = useState<any[]>([]);
+  const [checkingAccounts, setCheckingAccounts] = useState<any[]>([]);
   const user = useSelector((state: RootState) => state.user.user.data);
 
   useEffect(() => {
     dispatch(fetchInvestmentData());
     dispatch(fetchAccordionItemsData(user.id));
+    const fetchData = async () => {
+      const [stocksData, fixedIncomesData, checkingAccountsData] = await Promise.all([
+        fetchStocks(user.id),
+        fetchFixedIncomes(user.id),
+        fetchCheckingAccounts(user.id),
+      ]);
+      setStocks(stocksData);
+      setFixedIncomes(fixedIncomesData);
+      setCheckingAccounts(checkingAccountsData);
+    };
+
+    fetchData();
   }, [dispatch, user.id]);
 
   const [open, setOpen] = React.useState(false);
@@ -89,7 +105,7 @@ const AddInvestment: React.FC = () => {
             </Stack>
             <Grid item>
               <Paper sx={{ minHeight: 240, backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#fff' }}>
-                <CustomAccordion items={accordionItems} />
+                <CustomAccordion items={accordionItems} stocks={stocks} fixedIncomes={fixedIncomes} checkingAccounts={checkingAccounts} />
               </Paper>
             </Grid>
           </Grid>

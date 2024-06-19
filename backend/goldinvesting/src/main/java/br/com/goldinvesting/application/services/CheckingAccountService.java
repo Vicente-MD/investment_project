@@ -1,5 +1,10 @@
 package br.com.goldinvesting.application.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import br.com.goldinvesting.application.dto.CheckingAccountDTO;
 import br.com.goldinvesting.application.dto.converter.CheckingAccountConverter;
 import br.com.goldinvesting.application.ports.in.CheckingAccountUseCase;
@@ -7,12 +12,15 @@ import br.com.goldinvesting.application.ports.out.BrokerRepository;
 import br.com.goldinvesting.application.ports.out.CheckingAccountRepository;
 import br.com.goldinvesting.application.ports.out.TransactionRepository;
 import br.com.goldinvesting.application.ports.out.UserRepository;
-import br.com.goldinvesting.domain.model.*;
+import br.com.goldinvesting.domain.model.Broker;
+import br.com.goldinvesting.domain.model.CheckingAccount;
+import br.com.goldinvesting.domain.model.FixedIncome;
+import br.com.goldinvesting.domain.model.InvestmentType;
+import br.com.goldinvesting.domain.model.Status;
+import br.com.goldinvesting.domain.model.Transaction;
+import br.com.goldinvesting.domain.model.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -60,14 +68,23 @@ public class CheckingAccountService implements CheckingAccountUseCase {
 
     @Transactional
     @Override
-    public List<CheckingAccount> getCheckingAccounts() {
-        return checkingAccountRepository.findAll();
+    public List<CheckingAccountDTO> getCheckingAccounts(long userId) {
+        return transactionRepository.findByUserId(userId).stream()
+                .filter(t -> t.getStatus().name().equals(Status.ACTIVE.name()))
+                .map(Transaction::getInvestment)
+                .filter(CheckingAccount.class::isInstance)
+                .map(CheckingAccount.class::cast)
+                .map(CheckingAccountConverter::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     @Override
     public void concludeCheckingAccount(long id) {
-        var transaction = transactionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
+        Transaction transaction = transactionRepository.findByInvestmentId(id).stream()
+                .filter(t -> t.getInvestment() instanceof CheckingAccount)
+                .collect(Collectors.toList()).get(0);
+
         transaction.setStatus(Status.CONCLUDED);
         transactionRepository.save(transaction);
     }
