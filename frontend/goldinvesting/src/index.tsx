@@ -5,7 +5,8 @@ import { router } from './Routes/Routes';
 import { RouterProvider } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import { Provider } from 'react-redux';
-import {store} from './store/store';
+import { store, persistor } from './store/store'; // Updated import
+import { PersistGate } from 'redux-persist/integration/react'; // Import PersistGate
 import { fetchNews } from './features/news/NewsSlice';
 
 const root = ReactDOM.createRoot(
@@ -17,8 +18,10 @@ store.dispatch(fetchNews());
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <CssBaseline />
-      <RouterProvider router={router} />
+      <PersistGate loading={null} persistor={persistor}> {/* Add PersistGate */}
+        <CssBaseline />
+        <RouterProvider router={router} />
+      </PersistGate>
     </Provider>
   </React.StrictMode>,
 );
