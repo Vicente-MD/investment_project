@@ -242,3 +242,176 @@ CREATE TABLE FixedIncomeModel (
 
 ```
 ---
+
+
+
+ ## Estrutura do Projeto Frontend
+O diretório src contido dentro da pasta frontend, apresenta a estrutura principal do código-fonte do frontend, organizado da seguinte maneira:
+
+- **app**: arquivos gerais de conexão com api e Service de usuario e controle de persistencia.
+- **components**: Componentes reutilizáveis da interface.
+- **Pages**: Páginas principais da aplicação.
+- **redux**: Configurações e slices do Redux.
+- **Services**: Serviços para interação com APIs.
+- **styles**: Arquivos de estilo.
+- **utils**: Utilitários e helpers.
+- **Routes**:Contém as rotas de todas as páginas presentes no site.
+- **Features**: Contém os Slices que controlam os objetos do Redux
+- **tests**: Contém os testes da aplicação(Ver a parte de testes para mais detalhes).
+- **store**: Contém os Reducers para o funcionamento do Redux e para guardar e persistir os dados.
+- **Shared**: Contém arquivos utilizadas durante o projeto(todos os arquivos estão em uma pasta de images uma vez que todos são arquivos de imagem).
+
+
+## Dependências
+As principais dependências utilizadas no projeto incluem:
+
+- **React**: Biblioteca principal para construção de interfaces de usuário.
+- **TypeScript**: Superset do JavaScript que adiciona tipagem estática.
+- **MUI (Material-UI)**: Biblioteca de componentes de interface.
+- **Redux**: Biblioteca para gerenciamento de estado.
+- **Redux Toolkit**: Ferramentas para simplificação do uso do Redux.
+- **Axios**: Cliente HTTP para realizar requisições à API.
+
+## Instalação
+Para instalar as dependências do projeto, execute:
+
+```bash
+npm install
+```
+## Scripts Disponíveis
+No diretório do projeto, você pode executar:
+
+- **npm start**: Executa a aplicação em modo de desenvolvimento.
+- **npm test**: Inicia a execução dos testes.
+- **npm run build**: Compila a aplicação para produção na pasta build.
+
+## Utilização do MUI
+Utilizamos a biblioteca MUI para criar componentes de interface de usuário estilizados e consistentes. A MUI oferece uma vasta gama de componentes prontos para uso e altamente customizáveis, facilitando a construção de interfaces modernas.
+
+Exemplo de utilização de um componente MUI:
+
+```tsx
+import React from 'react';
+import { Button } from '@mui/material';
+
+const MyButton: React.FC = () => {
+  return (
+    <Button variant="contained" color="primary">
+      Clique Aqui
+    </Button>
+  );
+};
+
+export default MyButton;
+
+```
+
+## Utilização do TypeScript
+O uso do TypeScript no projeto ajuda a evitar erros comuns de runtime, proporcionando uma experiência de desenvolvimento mais segura e eficiente. A tipagem estática garante que os tipos de dados sejam consistentes em todo o código.
+
+Exemplo de componente com TypeScript:
+
+```tsx
+import React from 'react';
+
+interface Props {
+  name: string;
+  age: number;
+}
+
+const UserCard: React.FC<Props> = ({ name, age }) => {
+  return (
+    <div>
+      <h2>{name}</h2>
+      <p>Idade: {age}</p>
+    </div>
+  );
+};
+
+export default UserCard;
+```
+
+## Utilização do Redux
+O Redux é utilizado para o gerenciamento do estado global da aplicação. Através do Redux Toolkit, configuramos slices para gerenciar diferentes partes do estado da aplicação, facilitando a manutenção e a escalabilidade.
+
+Exemplo de configuração de slice com Redux Toolkit:
+
+```tsx
+Copiar código
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+interface UserState {
+  name: string;
+  age: number;
+}
+
+const initialState: UserState = {
+  name: '',
+  age: 0,
+};
+
+const userSlice = createSlice({
+  name: 'user',
+  initialState,
+  reducers: {
+    setUser: (state, action: PayloadAction<UserState>) => {
+      state.name = action.payload.name;
+      state.age = action.payload.age;
+    },
+  },
+});
+
+export const { setUser } = userSlice.actions;
+export default userSlice.reducer;
+
+```
+## Persistência de Dados
+Para a persistência de dados no frontend, utilizamos o Redux Persist, que permite armazenar o estado do Redux no armazenamento local (localStorage ou sessionStorage), garantindo que os dados do usuário sejam mantidos mesmo após recarregar a página.
+
+Configuração do Redux Persist:
+
+```tsx
+Copiar código
+import { configureStore } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import rootReducer from './rootReducer'; // Combine seus reducers
+
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+  reducer: persistedReducer,
+});
+
+const persistor = persistStore(store);
+
+export { store, persistor };
+
+```
+
+## Testes
+os arquivos de teste estão todos localizados dentro da pasta src/tests,os testes presentes precisam de alguns arquivos adicionais para funcionar,presentes dentro da pasta src,os arquivos em questão são o jest.config.js que possue as configurações necessárias para se realizar os testes,outro arquivo importante é o setupoTests.ts
+
+devido a um problema com as bibliotecas de gráfico (recharts,@mui/x-charts) foi necessário adicionar uma configuração para ignora-los durante a bateria de testes como por exemplo:
+
+```tsx
+jest.mock('@mui/x-charts/PieChart', () => ({
+  PieChart: jest.fn().mockImplementation(({ children }) => children),
+}));
+```
+
+## Executando a Aplicação
+Para iniciar a aplicação em modo de desenvolvimento, execute:
+
+```bash
+npm start
+
+```
+
+A aplicação estará disponível em http://localhost:3000.
+
