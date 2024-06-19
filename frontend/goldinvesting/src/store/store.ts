@@ -1,5 +1,6 @@
+// store.ts
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from '../features/user/userReducer';
+import userReducer from '../features/user/userSlice'; // Updated import
 import newsReducer from '../features/news/NewsSlice';
 import investmentsReducer from '../features/Investments/InvestmentsSlice';
 

@@ -6,7 +6,7 @@ import { yellow } from '@mui/material/colors';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
-import { fetchInvestmentData, fetchAccordionItemsData } from '../../features/Investments/InvestmentsSlice';
+import { fetchAccordionItemsData } from '../../features/Investments/InvestmentsSlice';
 import CustomModal from '../../Components/CustomModal';
 import { fetchCheckingAccounts, fetchFixedIncomes, fetchStocks } from '../../services/api';
 
@@ -18,14 +18,13 @@ const theme = createTheme({
 
 const AddInvestment: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data, accordionItems, status, error } = useSelector((state: RootState) => state.investments);
+  const { accordionItems, transformedData, status, error } = useSelector((state: RootState) => state.investments);
   const [stocks, setStocks] = useState<any[]>([]);
   const [fixedIncomes, setFixedIncomes] = useState<any[]>([]);
   const [checkingAccounts, setCheckingAccounts] = useState<any[]>([]);
   const user = useSelector((state: RootState) => state.user.user.data);
 
   useEffect(() => {
-    dispatch(fetchInvestmentData());
     dispatch(fetchAccordionItemsData(user.id));
     const fetchData = async () => {
       const [stocksData, fixedIncomesData, checkingAccountsData] = await Promise.all([
@@ -78,7 +77,7 @@ const AddInvestment: React.FC = () => {
                 <PieChart
                   series={[
                     {
-                      data,
+                      data: transformedData,
                       highlightScope: { faded: 'global', highlighted: 'item' },
                       faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
                     },

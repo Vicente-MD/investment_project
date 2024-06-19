@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchInvestments, fetchAccordionItems } from '../../services/api';
-import { useSelector } from 'react-redux';
+import { fetchAccordionItems } from '../../Services/api';
 import { RootState } from '../../store/store';
 
 interface Investment {
@@ -18,26 +17,58 @@ interface AccordionItem {
 }
 
 interface InvestmentsState {
-  data: Investment[];
+  transformedData: Investment[];
   accordionItems: AccordionItem[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
 
 const initialState: InvestmentsState = {
-  data: [],
+  transformedData: [],
   accordionItems: [],
   status: 'idle',
   error: null,
 };
 
-export const fetchInvestmentData = createAsyncThunk(
-  'investments/fetchInvestmentData',
-  async () => {
-    const investments = await fetchInvestments();
-    return investments;
-  }
-);
+const getLastValues = (items: AccordionItem[]): AccordionItem[] => {
+  const lastValues: { [key: string]: AccordionItem } = {};
+
+  items.forEach(item => {
+    const key = item.investmentType;
+    if (!lastValues[key] || 
+        item.year > lastValues[key].year || 
+        (item.year === lastValues[key].year && item.month > lastValues[key].month)) {
+      lastValues[key] = item;
+    }
+  });
+
+  return Object.values(lastValues);
+};
+
+const investmentLabels: { [key: string]: string } = {
+  'FIXED_INCOME': 'Renda Fixa',
+  'STOCK': 'Ações',
+  'CURRENT_ACCOUNT': 'Conta Corrente'
+};
+
+const labelIds: { [key: string]: number } = {
+  'Renda Fixa': 1,
+  'Ações': 2,
+  'Conta Corrente': 3
+};
+
+const transformData = (items: AccordionItem[]): Investment[] => {
+  const lastValues = getLastValues(items);
+
+  return lastValues.map((item) => {
+    const label = investmentLabels[item.investmentType] || item.investmentType;
+    return {
+      id: labelIds[label],
+      value: item.price,
+      label
+    };
+  });
+};
 
 export const fetchAccordionItemsData = createAsyncThunk(
   'investments/fetchAccordionItemsData',
@@ -53,23 +84,13 @@ const investmentsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchInvestmentData.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(fetchInvestmentData.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.data = action.payload;
-      })
-      .addCase(fetchInvestmentData.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message ?? 'An error occurred';
-      })
       .addCase(fetchAccordionItemsData.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(fetchAccordionItemsData.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.accordionItems = action.payload;
+        state.transformedData = transformData(action.payload);
       })
       .addCase(fetchAccordionItemsData.rejected, (state, action) => {
         state.status = 'failed';

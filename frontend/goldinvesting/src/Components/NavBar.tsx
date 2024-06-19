@@ -1,5 +1,6 @@
+// Navbar.tsx
 import React from 'react';
-import { Drawer, List, ListItemIcon, ListItemText, Toolbar, Divider, ListItemButton, IconButton } from '@mui/material';
+import { Drawer, List, ListItemIcon, ListItemText, Divider, ListItemButton, IconButton } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
 import CalculateIcon from '@mui/icons-material/Calculate';
@@ -7,13 +8,13 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
-import { styled } from '@mui/system';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useDispatch } from 'react-redux';
-import { logout } from '../features/auth/AuthSlice';
+import { logoutUser } from '../features/user/userSlice'; // Updated import
 import Logo from '../shared/images/logo.png';
+import { AppDispatch } from '../store/store'; // Ensure correct import
 import { BarChartOutlined } from '@mui/icons-material';
 
 const drawerWidth = 240;
@@ -57,20 +58,19 @@ const Navbar: React.FC = () => {
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logoutUser());
     navigate('/');
   };
 
   const drawer = (
     <>
-      {/* <Toolbar /> */}
       <List>
         {[
           { text: 'Home', icon: <HomeIcon />, link: '/home' },
